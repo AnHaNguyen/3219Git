@@ -1,6 +1,7 @@
 <?php
 	//require_once("connects3.php");
 	session_start();
+	ini_set('max_execution_time', 300);	//give 5 mins to clone a repo
 	define('DIR',"../../repos/");
 	
 	if (!is_dir(DIR)) {
@@ -10,7 +11,7 @@
 	if (isset($_REQUIRE["url"])){
 		$git_url = $_REQUIRE["url"];	
 	} else { //testing
-		$git_url = "https://github.com/AnHaNguyen/CS3219.git";	
+		$git_url = "https://github.com/AnHaNguyen/SPA";	
 	}
 	if (strpos($git_url, '.git') === false) {
 		$git_url = $git_url.".git";
@@ -24,6 +25,7 @@
 	chdir($repo_name);
 	$_SESSION['git_url'] = $git_url;
 	$_SESSION['repo_name'] = $repo_name;
+	echo("DONE");
 
 	function doClone($git_url, $repo_name) {
 		if (!is_dir($repo_name)) {
