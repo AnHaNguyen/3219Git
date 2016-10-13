@@ -22,5 +22,13 @@
 			$this->totalIns = $ins;
 			$this->totalDel = $del;
 		}
+
+		function getIns() {
+			return $this->totalIns;
+		}
+
+		function getDel() {
+			return $this->totalDel;
+		}
 	}
 ?>
