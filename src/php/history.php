@@ -17,6 +17,8 @@
 	//echo(json_encode($list));
 	// $list = getHistoryFile("source/DesignExtractor.cpp");
 	// echo(json_encode($list));
+	//$list = getHistoryFile("source/DesignExtractor.cpp", array(10,18));
+	//echo(json_encode($list));
 
 	function getHistoryUser($name, $date=null) {	//$date in ISO form: YYYY-MM-DD
 		if ($date === null) {
@@ -61,6 +63,29 @@
 			return $list;
 		} else {
 			//TODO: show commit history for a chunk of lines in a file
+			$command = "git log -L ".$range[0].",".$range[1].":".$file." --date=iso --abbrev-commit";
+			$out = array();
+			$hash = '';
+			$author = '';
+			$date = '';
+			$list = array();
+			exec($command,$out);
+			foreach($out as $line) {
+				$line = trim_all($line);
+				if (strpos($line, 'commit') !== false) {
+					$hash = substr($line, strpos($line, 'commit') + 7);
+				} else if (strpos($line, 'Author:') !== false) {
+					if (strpos($line, '<') !== false) {
+						$author = substr($line, strpos($line, 'Author:') + 8, strpos($line, ' <') - strpos($line, 'Author:') - 8);
+					} else {
+						$author = substr($line, strpos($line, 'Author:') + 8);
+					}
+				} else if (strpos($line, 'Date:') !== false) {
+					$date = substr($line, strpos($line, 'Date:') + 6, 10);
+					array_push($list, new Commit($hash, $author, $date));
+				}
+			}
+			return $list;
 		}
 	}
 ?>
