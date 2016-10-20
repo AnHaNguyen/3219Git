@@ -1,5 +1,6 @@
 <?php
-	function trim_all( $str , $what = NULL , $with = ' ' ){
+	session_start();
+    function trim_all( $str , $what = NULL , $with = ' ' ){
     	if( $what === NULL ) {
         //  Character      Decimal      Use
         //  "\0"            0           Null Character
@@ -14,4 +15,15 @@
    
     	return trim(preg_replace( "/[".$what."]+/" , $with , $str));
 	}
+
+    function redirect() {
+        if (isset($_SESSION['git_url'])){
+            $url = $_SESSION['git_url'];
+            $repo = $_SESSION['repo_name'];
+        } else {//testing
+            $url = "https://github.com/AnHaNguyen/SPA.git";
+            $repo = "SPA";
+        }
+        chdir("../../repos/".$repo);
+    }
 ?>

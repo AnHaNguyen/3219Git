@@ -2,19 +2,12 @@
 	require_once("user.php");
 	require_once("util.php");
 	session_start();
-	if (isset($_SESSION['git_url'])){
-		$url = $_SESSION['git_url'];
-		$repo = $_SESSION['repo_name'];
-	} else {//testing
-		$url = "https://github.com/AnHaNguyen/SPA.git";
-		$repo = "SPA";
-	}
-	chdir("../../repos/".$repo);
 
-	$users = getAllUsers();
-	echo(json_encode($users));
+	// $users = getAllUsers();
+	// echo(json_encode($users));
 	
 	function getAllUsers() {
+		redirect();
 		$out = array();
 		exec("git shortlog -sn", $out);
 		$tokens = explode(" ", $out[0]);

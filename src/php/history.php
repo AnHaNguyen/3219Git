@@ -2,14 +2,6 @@
 	require_once("util.php");
 	require_once("commit.php");
 	session_start();
-	if (isset($_SESSION['git_url'])){
-		$url = $_SESSION['git_url'];
-		$repo = $_SESSION['repo_name'];
-	} else {//testing
-		$url = "https://github.com/AnHaNguyen/SPA.git";
-		$repo = "SPA";
-	}
-	chdir("../../repos/".$repo);
 
 	// $list = getHistoryUser("AnHaNguyen");
 	// echo(json_encode($list));
@@ -21,6 +13,7 @@
 	//echo(json_encode($list));
 
 	function getHistoryUser($name, $date=null) {	//$date in ISO form: YYYY-MM-DD
+		redirect();
 		if ($date === null) {
 			$command = "git log --author=\"".$name."\" --pretty=format:\"%h %ci\"";
 		} else {
@@ -39,6 +32,7 @@
 	}
 
 	function getHistoryFile($file, $range=null) {
+		redirect();
 		if ($range === null) {
 			$command = "git log --pretty=format:\"%h %an %ci\" ".$file;
 			$out = array();
@@ -62,7 +56,6 @@
 			}
 			return $list;
 		} else {
-			//TODO: show commit history for a chunk of lines in a file
 			$command = "git log -L ".$range[0].",".$range[1].":".$file." --date=iso --abbrev-commit";
 			$out = array();
 			$hash = '';

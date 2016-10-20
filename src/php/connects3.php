@@ -6,8 +6,8 @@
 	use Aws\S3\S3Client;
 	use Aws\Credentials\Credentials;
 	
-	sendToCloud("https://github.com/AnHaNguyen/CS3219.git", "repos");
-	sendToCloud("a0113038@u.nus.edu", "emails");
+	// sendToCloud("https://github.com/AnHaNguyen/CS3219.git", "repos");
+	// sendToCloud("a0113038@u.nus.edu", "emails");
 
 	function sendToCloud($string, $type) {
 		$bucket = '3219';
