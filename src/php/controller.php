@@ -2,7 +2,7 @@
 	require_once('repo.php');
 	require_once('contributors.php');
 	require_once('history.php');
-	//require_once('connects3.php');
+	require_once('connects3.php');
 	ini_set('max_execution_time', 300);	//give 5 mins to clone a repo
 	session_start();
 	
@@ -19,14 +19,14 @@
 				$repoObj = new Repo($repo);
 
 				$repoObj->initialize();
-				//sendToCloud($repo, "repos");
+				sendToCloud($repo, "repos");
 				echo("success");
 				break;
 			case 'addemail':
 				if ($email === null) {
 					exit("Please include an email address");
 				}
-				//sendToCloud($email, "emails");
+				sendToCloud($email, "emails");
 				echo("success");
 				break;
 			case 'getcontributors':
