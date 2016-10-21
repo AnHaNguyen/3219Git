@@ -21,6 +21,7 @@
 				$repoObj->initialize();
 				sendToCloud($repo, "repos");
 				echo("success");
+				return("success");
 				break;
 			case 'addemail':
 				if ($email === null) {
@@ -28,10 +29,12 @@
 				}
 				sendToCloud($email, "emails");
 				echo("success");
+				return("success");
 				break;
 			case 'getcontributors':
 				$list = getAllUsers();
 				echo(json_encode($list));
+				return($list);
 				break;
 			case 'getcommithistory':
 				if ($user === null) {	
@@ -39,6 +42,7 @@
 				}
 				$list = getHistoryUser($user, $start);
 				echo(json_encode($list));
+				return($list);
 				break;
 			case 'getfilehistory':
 				if ($file===null) {
@@ -46,6 +50,7 @@
 				}
 				$list = getHistoryFile($file, [$s,$e]);
 				echo(json_encode($list));
+				return($list);
 				break;
 			default:
 				exit("Unregconized command");
