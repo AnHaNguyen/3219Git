@@ -6,108 +6,84 @@
     include_once('./template/navbar.php');
     include_once('./php/controller.php');
     
-    execute($command='addrepo',$repo="https://github.com/jiaminw12/cs2102_stuffSharing");
-    $result1 = execute($command='getcontributors',$repo="https://github.com/jiaminw12/cs2102_stuffSharing",null,$user="jiaminw12",null,null,'','');
+    if(isset($_SESSION['git_url']) && !empty($_SESSION['git_url']) && isset($_SESSION['git_username']) && !empty($_SESSION['git_username'])) {
+        $result1 = execute('getcontributors', $_SESSION['git_url'], null, $_SESSION['git_username'], null, null,'','');
+    }
     
-    // use jquery.ajax
-    // insert
-    // /controller.php/command=addCommand?.....
-?>
+    if (isset($_POST["submit"])) {
+        //https://github.com/jiaminw12/cs2102_stuffSharing
+        
+        $userLink = $_POST['basic-url'];
+        execute($command='addrepo',$repo=$userLink);
+        
+        $res = explode('/', parse_url($userLink, PHP_URL_PATH));
+        $username = $res[1];
+        $_SESSION['git_username'] = $username;
+        
+        $result1 = execute('getcontributors', $userLink,null,$username,null,null,'','');
+    }
+    
+    ?>
 
+<link href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet" />
 <script src="./assets/js/d3.min.js" type="text/javascript"></script>
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+<script src="./assets/js/app.js" type="text/javascript"></script>
 
 <div class="container">
 
 <!-- Main component for a primary marketing message or call to action -->
 <div class="jumbotron">
-<h2>Visualize your GitHub Repos</h2>
-<p>
-<label for="basic-url">Your Github Repo URL</label>
-<form method="post" class="form" role="form">
-<input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
-<p></p>
-<button class="btn btn-primary" id="submit" name="submit" type="submit">Submit</button>
-</form>
-</p>
+    <h2>Visualize your GitHub Repos</h2>
+    <p>
+    <label>Your Github Repo URL</label>
+    <form method="post" class="form" role="form" action="index.php">
+        <input type="text" class="form-control" id="basic-url" name="basic-url" aria-describedby="basic-addon3">
+        <p></p>
+        <input class="btn btn-primary" id="submit" name="submit" value="Submit" type="submit">
+    </form>
+    </p>
 </div>
 
-<div id="chart">
-<ol id="langDetails"></ol>
+
+<div class="row">
+    <div class="col-xs-8">
+        <h4 class="sub-header">The following historical commit information, by author, was found.</h4>
+        <br/>
+        <div class="table-responsive">
+            <table id="sortable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th class="col-md-1">Author</th>
+                        <th class="col-md-2">Commits</th>
+                        <th class="col-md-3">Insertions</th>
+                        <th class="col-md-3">Deletions</th>
+                        <th class="col-md-3">% of changes</th>
+                    </tr>
+                </thead>
+                <tbody id="tablebody01"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="col-xs-4">
+        <div id="chart"></div>
+    </div>
+
 </div>
 
-    /* detect when the button is clicked
-        call addRepo first
-        call contributors
-        call history*/
- 
-    <script type="text/javascript">
-        var jsonData = '<?php echo $result1 ?>';
-        console.log(jsonData);
-        var data = JSON.parse(jsonData);
+<script type="text/javascript">
+    var jsonData = '<?php echo $result1 ?>';
+    var data = JSON.parse(jsonData);
+    draw01(data);
+    buildTable(data);
 
-    /*var userName = [], commitNum = [];
- 
-    for (var i = 0; i < myJson.length; i++) {
-     var counter = myJson[i];
-     userName.push(counter.name);
-     commitNum.push(counter.commit_num);
-     }*/
+    $(document).ready(function() {
+        $('#sortable').DataTable();
+    } );
 
-    var width = 360,
-    height = 300,
-    radius = Math.min(width, height) / 2;
- 
-    var color = d3.scale.ordinal()
-                .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b"]);
- 
-    var arc = d3.svg.arc()
-                .outerRadius(radius - 10)
-                .innerRadius(0);
- 
-    var labelArc = d3.svg.arc()
-                    .outerRadius(radius - 40)
-                    .innerRadius(radius - 40);
- 
-    var pie = d3.layout.pie()
-                .sort(null)
-                .value(function(d) { return d.commit_num; });
- 
-    var svg = d3.select("div#chart").append("svg")
-                .attr("width", width)
-                .attr("height", height)
-                .append("g")
-                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
- 
-    function draw(){
-        var g = svg.selectAll(".arc")
-        .data(pie(data))
-        .enter().append("g")
-        .attr("class", "arc");
- 
-        g.append("path")
-        .attr("d", arc)
-        .style("fill", function(d) { return color(d.data.name); });
- 
-        g.append("text")
-        .attr("transform", function(d) { return "translate(" + labelArc.centroid(d) + ")"; })
-        .attr("dy", ".35em")
-        .text(function(d) { return d.data.name; });
-    }
- 
-    function type(d) {
-        d.commit_num = +d.commit_num;
-        return d;
-    }
- 
-    draw();
-
-    </script>
+</script>
 
 </div> <!-- /container -->
 

@@ -7,7 +7,6 @@
       return "";
     }
   }
-  //include_once("controller/UserController.php");
 ?>
 
 <nav class="navbar navbar-default navbar-fixed-top">
@@ -19,15 +18,15 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">GIT-Guard</a>
+            <a class="navbar-brand" href="index.php">GIT-Guard</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="index.php">Home</a></li>
-                <li><a href="subscription.php">Subscription</a></li>
+                <li class="<?php echo isActive('Home'); ?>"><a href="index.php">1a</a></li>
+                <li class="<?php echo isActive('Commit History'); ?>"><a href="commitHistory.php">1b</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li id="login"><a href="login.php">Login</a></li>
+                <li class="<?php echo isActive('Subscription'); ?>"><a href="subscription.php">Subscription</a></li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>
