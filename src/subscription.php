@@ -1,6 +1,6 @@
 <?php
-//session_start();
-$current_page = 'Home';
+session_start();
+$current_page = 'Subscription';
 include_once('./template/header.php');
 include_once('./template/navbar.php');
 ?>
