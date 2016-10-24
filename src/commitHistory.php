@@ -37,16 +37,41 @@
         array_push($list, $out);
         
         $finalResult = json_encode($list);
-
     }
     
     ?>
 
-<link href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet" />
-<script src="https://d3js.org/d3.v4.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
-<script src="./assets/js/app.js" type="text/javascript"></script>
+<script src="https://d3js.org/d3.v3.min.js"></script></script>
+<script src="./assets/js/app02.js" type="text/javascript"></script>
+
+<style>
+    path {
+        stroke: steelblue;
+        stroke-width: 2;
+        fill: none;
+    }
+
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: grey;
+            stroke-width: 1;
+            shape-rendering: crispEdges;
+    }
+
+    div.tooltip {
+        position: absolute;
+        text-align: center;
+        width: 60px;
+        height: 30px;
+        padding: 2px;
+        font: 12px sans-serif;
+        background: lightsteelblue;
+        border: 0px;
+        border-radius: 8px;
+        pointer-events: none;
+    }
+</style>
 
 <div class="container">
 
@@ -61,62 +86,12 @@
 <script type="text/javascript">
 
     var jsonData = '<?php echo $finalResult ?>';
-    console.log(jsonData);
+    //console.log(jsonData);
     var data = JSON.parse(jsonData);
 
-    // set the dimensions and margins of the graph
-    var margin = {top: 20, right: 20, bottom: 30, left: 50},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    drawLineGraph(data);
 
-    // parse the date / time
-    var parseTime = d3.timeParse("%Y-%m-%d");
-
-    // set the ranges
-    var x = d3.scaleTime().range([0, width]);
-    var y = d3.scaleLinear().range([height, 0]);
-
-    // define the line
-    var valueline = d3.line()
-    .x(function(d) { return x(d.date); })
-    .y(function(d) { return y(d.totalNum); });
-
-    // append the svg obgect to the body of the page
-    // appends a 'group' element to 'svg'
-    // moves the 'group' element to the top left margin
-    var svg = d3.select("div#chart").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
-
-    // Scale the range of the data
-    x.domain(d3.extent(data, function(d) { return d.date; }));
-    y.domain([0, d3.max(data, function(d) { return d.totalNum; })]);
-
-    // Add the valueline path.
-    svg.append("path")
-    .data([data])
-    .attr("class", "line")
-    .attr("d", valueline);
-
-    // Add the X Axis
-    svg.append("g")
-    .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x));
-
-    // Add the Y Axis
-    svg.append("g")
-    .call(d3.axisLeft(y));
-
-    function type(d) {
-        d.date = parseTime(d.date);
-        d.totalNum = +d.totalNum;
-        return d;
-    }
-
-</script>
+    </script>
 
 </div> <!-- /container -->
 

@@ -90,5 +90,3 @@ function buildTable(data){
         document.getElementById("tablebody01").appendChild(row);
     }
 }
-
-
