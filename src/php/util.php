@@ -20,9 +20,10 @@
             $url = $_SESSION['git_url'];
             $repo = $_SESSION['repo_name'];
         } else {//testing
-            $url = "https://github.com/AnHaNguyen/SPA.git";
-            $repo = "SPA";
+            exit("Session does not exist");
         }
-        chdir("../../repos/".$repo);
+        if (is_dir("../../repos/".$repo)) {
+           chdir("../../repos/".$repo);
+        }
     }
 ?>
