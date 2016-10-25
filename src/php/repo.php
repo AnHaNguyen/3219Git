@@ -1,6 +1,5 @@
 <?php
 	require_once("connects3.php");
-	session_start();
 	define('DIR',"../../repos/");
 	class Repo {
 		var $url;

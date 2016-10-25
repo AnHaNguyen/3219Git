@@ -1,6 +1,5 @@
 <?php
-	session_start();
-    function trim_all( $str , $what = NULL , $with = ' ' ){
+	function trim_all( $str , $what = NULL , $with = ' ' ){
     	if( $what === NULL ) {
         //  Character      Decimal      Use
         //  "\0"            0           Null Character

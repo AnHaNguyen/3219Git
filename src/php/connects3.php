@@ -1,5 +1,5 @@
 <?php
-	foreach(glob('aws/*.php') as $file) {
+	foreach(glob('php/aws/*.php') as $file) {
     	include_once $file;
 	}
 	require_once("credential.php");
@@ -12,7 +12,7 @@
 	function sendToCloud($string, $type) {
 		$bucket = '3219';
 		$keyname = $type.'.txt';
-		$filepath = '../../data/'.$type.'.txt';
+		$filepath = '../data/'.$type.'.txt';
 		$fo = fopen($filepath,"a+");
 		$dup = false;
 		while(($line = fgets($fo)) !== false) {

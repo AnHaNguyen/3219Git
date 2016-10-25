@@ -1,7 +1,7 @@
 <?php
 	require_once("user.php");
 	require_once("util.php");
-	session_start();
+	//session_start();
 
 	// $users = getAllUsers();
 	// echo(json_encode($users));

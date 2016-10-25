@@ -1,7 +1,7 @@
 <?php
 	require_once("util.php");
 	require_once("commit.php");
-	session_start();
+	//session_start();
 
 	// $list = getHistoryUser("AnHaNguyen");
 	// echo(json_encode($list));
