@@ -4,7 +4,7 @@
 	require_once('history.php');
 	//require_once('connects3.php');
 	ini_set('max_execution_time', 300);	//give 5 mins to clone a repo
-	session_start();
+	//session_start();
 	
 	// execute($command='addrepo',$repo="https://github.com/AnHaNguyen/SPA");
 	// execute($command='getcontributors',null,null,null,null,null,'','');
