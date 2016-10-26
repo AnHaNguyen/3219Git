@@ -19,7 +19,7 @@
 				$repoObj = new Repo($repo);
 
 				$repoObj->initialize();
-				//sendToCloud($repo, "repos");
+			//	sendToCloud($repo, "repos");
 				//echo("success");
 				return("success");
 				break;
@@ -27,7 +27,7 @@
 				if ($email === null) {
 					exit("Please include an email address");
 				}
-				//sendToCloud($email, "emails");
+			//	sendToCloud($email, "emails");
 				//echo("success");
 				return("success");
 				break;
