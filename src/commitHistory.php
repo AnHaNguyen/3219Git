@@ -7,10 +7,13 @@
     include_once('./php/controller.php');
     
     if(isset($_SESSION['git_url']) && !empty($_SESSION['git_url']) && isset($_SESSION['git_username']) && !empty($_SESSION['git_username'])) {
+        //https://github.com/jiaminw12/cs2102_stuffSharing
+
         $result = execute('getcommithistory', $_SESSION['git_url'], null, $_SESSION['git_username'], null, null,'','');
+        $result = json_encode($result);
         
         $jsondata = json_decode($result, true);
-        
+        // https://github.com/jiaminw12/cs2102_stuffSharing/tree/b3f1a8b
         $out = array();
         $list = array();
         $previousDate = null;
@@ -86,7 +89,7 @@
 <script type="text/javascript">
 
     var jsonData = '<?php echo $finalResult ?>';
-    //console.log(jsonData);
+    console.log(jsonData);
     var data = JSON.parse(jsonData);
 
     drawLineGraph(data);

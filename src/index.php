@@ -7,20 +7,25 @@
     include_once('./php/controller.php');
     
     if(isset($_SESSION['git_url']) && !empty($_SESSION['git_url']) && isset($_SESSION['git_username']) && !empty($_SESSION['git_username'])) {
-        $result1 = execute('getcontributors', $_SESSION['git_url'], null, $_SESSION['git_username'], null, null,'','');
+        $result = execute('getcontributors', null, null, null, null, null,'','');
+        $result = json_encode($result);
     }
     
     if (isset($_POST["submit"])) {
         //https://github.com/jiaminw12/cs2102_stuffSharing
+        //https://github.com/scrapy/scrapy <- cannot clone
+        //102 - https://github.com/leereilly/games
         
         $userLink = $_POST['basic-url'];
-        execute($command='addrepo',$repo=$userLink);
+        $response = execute($command='addrepo',$userLink);
         
-        $res = explode('/', parse_url($userLink, PHP_URL_PATH));
-        $username = $res[1];
-        $_SESSION['git_username'] = $username;
-        
-        $result1 = execute('getcontributors', $userLink,null,$username,null,null,'','');
+        if (strcmp($response,"sucess")){
+            $res = explode('/', parse_url($userLink, PHP_URL_PATH));
+            $username = $res[1];
+            $_SESSION['git_username'] = $username;
+            $result = execute('getcontributors',null,null,null,null,null,'','');
+            $result = json_encode($result);
+        }
     }
     
     ?>
@@ -30,6 +35,50 @@
 <script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
 <script src="./assets/js/app.js" type="text/javascript"></script>
+<style>
+svg {
+width: 100%;
+height: 100%;
+}
+
+path.slice{
+    stroke-width:2px;
+}
+
+polyline{
+opacity: .3;
+stroke: black;
+    stroke-width: 2px;
+fill: none;
+}
+
+.labelValue
+{
+    font-size: 60%;
+opacity: .5;
+    
+}
+
+.toolTip {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+position: absolute;
+display: none;
+width: auto;
+height: auto;
+background: none repeat scroll 0 0 white;
+border: 0 none;
+    border-radius: 8px 8px 8px 8px;
+    box-shadow: -3px 3px 15px #888888;
+color: black;
+font: 12px sans-serif;
+padding: 5px;
+    text-align: center;
+}
+text {
+font: 12px sans-serif;
+}
+</style>
+
 
 <div class="container">
 
@@ -48,7 +97,11 @@
 
 
 <div class="row">
-    <div class="col-xs-8">
+    <div class="col-xs-12">
+        <div id="chart"></div>
+    </div>
+
+    <div class="col-xs-12">
         <h4 class="sub-header">The following historical commit information, by author, was found.</h4>
         <br/>
         <div class="table-responsive">
@@ -66,22 +119,16 @@
             </table>
         </div>
     </div>
-
-    <div class="col-xs-4">
-        <div id="chart"></div>
-    </div>
-
 </div>
 
 <script type="text/javascript">
-    var jsonData = '<?php echo $result1 ?>';
+    var jsonData = '<?php echo $result ?>';
     var data = JSON.parse(jsonData);
-    draw01(data);
     buildTable(data);
-
     $(document).ready(function() {
-        $('#sortable').DataTable();
-    } );
+                      $('#sortable').DataTable();
+    });
+    draw01(data);
 
 </script>
 

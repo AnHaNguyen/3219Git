@@ -42,7 +42,7 @@ function drawLineGraph(data){
     data.forEach(function(d) {
                  d.date = parseDate(d.date);
                  d.totalNum = +d.totalNum;
-                 });
+    });
     
     // Scale the range of the data
     x.domain(d3.extent(data, function(d) { return d.date; }));
