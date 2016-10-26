@@ -32,50 +32,19 @@
 
 <link href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet" />
 <script src="./assets/js/d3.min.js" type="text/javascript"></script>
+<script src="./assets/js/d3pie.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
 <script src="./assets/js/app.js" type="text/javascript"></script>
+
 <style>
-svg {
-width: 100%;
-height: 100%;
-}
-
-path.slice{
-    stroke-width:2px;
-}
-
-polyline{
-opacity: .3;
-stroke: black;
-    stroke-width: 2px;
-fill: none;
-}
-
-.labelValue
-{
-    font-size: 60%;
-opacity: .5;
-    
-}
-
-.toolTip {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-position: absolute;
-display: none;
-width: auto;
-height: auto;
-background: none repeat scroll 0 0 white;
-border: 0 none;
-    border-radius: 8px 8px 8px 8px;
-    box-shadow: -3px 3px 15px #888888;
-color: black;
-font: 12px sans-serif;
-padding: 5px;
-    text-align: center;
-}
-text {
-font: 12px sans-serif;
+svg{
+    width: 600px;
+    position: relative;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
 }
 </style>
 
@@ -128,8 +97,7 @@ font: 12px sans-serif;
     $(document).ready(function() {
                       $('#sortable').DataTable();
     });
-    draw01(data);
-
+    draw01();
 </script>
 
 </div> <!-- /container -->
