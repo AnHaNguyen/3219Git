@@ -6,14 +6,17 @@
 	use Aws\S3\S3Client;
 	use Aws\Credentials\Credentials;
 	
-	 sendToCloud("https://github.com/AnHaNguyen/CS3219.git", "repos");
-	 sendToCloud("a0113038@u.nus.edu", "emails");
+	 // sendToCloud("https://github.com/AnHaNguyen/CS3219.git", "repos");
+	 // sendToCloud("a0113038@u.nus.edu", "emails");
 	
 	function sendToCloud($string, $type) {
 		$bucket = '3219';
 		$keyname = $type.'.txt';
-		$filepath = '../data/'.$type.'.txt';
-		$fo = fopen($filepath,"a+");
+		$filepath = '../../data/'.$type.'.txt';
+		if (!is_dir('../../data/')) {
+			mkdir('../../data/');
+		}
+		$fo = fopen($filepath, "a+");
 		$dup = false;
 		while(($line = fgets($fo)) !== false) {
 			if (strcmp(rtrim($line, "\r\n"), $string) == 0) {
