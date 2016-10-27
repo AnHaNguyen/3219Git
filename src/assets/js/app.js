@@ -10,9 +10,7 @@ function buildTable(data){
         overallInsertAndDeletions += insertNum + deleteNum;
     }
     
-    //console.log(totalInsertAndDeletions);
     for (var i = 0; i < data.length; i++) {
-        var item = {};
         var counter = data[i];
         var row = document.createElement("tr");
         var col1 = document.createElement("td"); //author

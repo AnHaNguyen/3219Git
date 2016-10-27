@@ -92,6 +92,7 @@ svg{
 
 <script type="text/javascript">
     var jsonData = '<?php echo $result ?>';
+    //console.log(jsonData);
     var data = JSON.parse(jsonData);
     buildTable(data);
     $(document).ready(function() {
