@@ -1,23 +1,13 @@
 <?php
 	require_once("util.php");
 	require_once("commit.php");
-	//session_start();
-
-	// $list = getHistoryUser("AnHaNguyen");
-	// echo(json_encode($list));
-	// $list = getHistoryUser("AnHaNguyen", "2015-9-12");
-	//echo(json_encode($list));
-	// $list = getHistoryFile("source/DesignExtractor.cpp");
-	// echo(json_encode($list));
-	//$list = getHistoryFile("source/DesignExtractor.cpp", array(10,18));
-	//echo(json_encode($list));
 
 	function getHistoryUser($name, $date=null) {	//$date in ISO form: YYYY-MM-DD
-		redirect();
+		//redirect();
 		if ($date === null) {
-			$command = "git log --author=\"".$name."\" --pretty=format:\"%h %ci\"";
+			$command = "git log --reverse --author=\"".$name."\" --pretty=format:\"%h %ci\"";
 		} else {
-			$command = "git log --author=\"".$name."\" --pretty=format:\"%h %ci\" --since=".$date;
+			$command = "git log --reverse --author=\"".$name."\" --pretty=format:\"%h %ci\" --since=".$date;
 		}
 		$out = array();
 		$list = array();
@@ -32,9 +22,9 @@
 	}
 
 	function getHistoryFile($file, $range=null) {
-		redirect();
+		//redirect();
 		if ($range === null) {
-			$command = "git log --pretty=format:\"%h %an %ci\" ".$file;
+			$command = "git log --reverse --pretty=format:\"%h %an %ci\" ".$file;
 			$out = array();
 			$list = array();
 			exec($command, $out);
@@ -56,7 +46,7 @@
 			}
 			return $list;
 		} else {
-			$command = "git log -L ".$range[0].",".$range[1].":".$file." --date=iso --abbrev-commit";
+			$command = "git log --reverse -L ".$range[0].",".$range[1].":".$file." --date=iso --abbrev-commit";
 			$out = array();
 			$hash = '';
 			$author = '';
