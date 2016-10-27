@@ -1,18 +1,3 @@
-function createCheckboxes(data){
-    d3.select("div#checkboxArea").selectAll("input")
-    .data(data)
-    .enter()
-    .append('label')
-    .attr('for',function(d,i){ return d.name; })
-    .text(function(d) { return d; })
-    .append("input")
-    .attr("checked", true)
-    .attr("type", "checkbox")
-    .attr("id", function(d,i) { return d.name; })
-    .attr("onClick", "change(this)")
-    .append('br');
-}
-
 function drawLineGraph(data){
     
     // Set the dimensions of the canvas / graph
