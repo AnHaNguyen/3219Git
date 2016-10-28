@@ -14,7 +14,7 @@
     if (isset($_POST["submit"])) {
         //https://github.com/jiaminw12/cs2102_stuffSharing
         //https://github.com/scrapy/scrapy <- cannot clone
-        //102 - https://github.com/leereilly/games
+        //https://github.com/detailyang/awesome-cheatsheet
         
         $userLink = $_POST['basic-url'];
         $response = execute($command='addrepo',$userLink);
