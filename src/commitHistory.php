@@ -21,10 +21,6 @@
     }
     
     if (isset($_POST["submit"])) {
-        //https://github.com/jiaminw12/cs2102_stuffSharing
-        //https://github.com/scrapy/scrapy <- cannot clone
-        //102 - https://github.com/leereilly/games
-        
         $startDate = $_POST['startDate'];
         $_SESSION['git_start_date'] = $startDate;
         $result = execute('getcommithistory',null,null,$_SESSION['git_username'],$startDate,null,'','');

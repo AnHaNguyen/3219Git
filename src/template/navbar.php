@@ -27,7 +27,18 @@
                 <li class="<?php echo isActive('File History'); ?>"><a href="fileHistory.php">1d</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li class="<?php echo isActive('Subscription'); ?>"><a href="subscription.php">Subscription</a></li>
+				<?php
+				  if (isset($_SESSION["loginuser"])) {
+					?>
+					 <li class="<?php echo isActive('Subscription'); ?>"><a href="subscription.php">Subscription</a></li>
+					<li class="<?php echo isActive('Logout'); ?>"><a href="logout.php">Log Out</a></li>
+					<?php
+				  } else {
+					?>
+					<li class="<?php echo isActive('Login'); ?>"><a href="login.php">Login</a></li>
+					<?php
+				  }
+        		?>
             </ul>
         </div><!--/.nav-collapse -->
     </div>
