@@ -14,14 +14,14 @@
 				$repoObj = new Repo($repo);
 
 				$repoObj->initialize();
-			//	sendToCloud($repo, "repos");
+				//sendToCloud($repo, "repos");
 				return("success");
 				break;
 			case 'addemail':
 				if ($email === null) {
 					exit("Please include an email address");
 				}
-			//	sendToCloud($email, "emails");
+				//sendToCloud($email, "emails");
 				return("success");
 				break;
 			case 'getcontributors':
