@@ -24,6 +24,7 @@
             <ul class="nav navbar-nav">
                 <li class="<?php echo isActive('Home'); ?>"><a href="index.php">1a</a></li>
                 <li class="<?php echo isActive('Commit History'); ?>"><a href="commitHistory.php">1b</a></li>
+				<li class="<?php echo isActive('Commit History Diff'); ?>"><a href="commitHistoryDiff.php">1c</a></li>
                 <li class="<?php echo isActive('File History'); ?>"><a href="fileHistory.php">1d</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
