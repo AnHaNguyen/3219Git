@@ -13,8 +13,7 @@
     
     if (isset($_POST["submit"])) {
         //https://github.com/jiaminw12/cs2102_stuffSharing
-        //https://github.com/scrapy/scrapy <- cannot clone
-        //https://github.com/detailyang/awesome-cheatsheet
+        //https://github.com/nhaarman/ListViewAnimations
         
         $userLink = $_POST['basic-url'];
         $response = execute($command='addrepo',$userLink);
@@ -24,10 +23,28 @@
             $username = $res[1];
             $_SESSION['git_username'] = $username;
             $result = execute('getcontributors',null,null,null,null,null,'','');
+			
+			$_SESSION['git_contributors'] = getContributorsList($result);
+			
             $result = json_encode($result);
         }
     }
-    
+	
+	function getContributorsList($result){
+		$total = 0;
+		$result = json_encode($result);
+        $jsondata = json_decode($result, true);
+		$out = array();
+        $list = array();
+		foreach ($jsondata as $re){
+			$out["Name"] = $re["name"];
+			array_push($list, $out);
+			$total += 1;
+		}
+		$_SESSION['git_total_contributors'] = $total;
+		return json_encode($list);
+	}
+ 
     ?>
 
 <link href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet" />
@@ -92,7 +109,6 @@ svg{
 
 <script type="text/javascript">
     var jsonData = '<?php echo $result ?>';
-    //console.log(jsonData);
     var data = JSON.parse(jsonData);
     buildTable(data);
     $(document).ready(function() {
