@@ -1,114 +1,100 @@
-function drawLineGraph(data){
-    
-    // Set the dimensions of the canvas / graph
-    var margin = {top: 30, right: 20, bottom: 30, left: 50},
-    width = 960 - margin.left - margin.right,
-    height = 300 - margin.top - margin.bottom;
-    
-    // Parse the date / time
-    var parseDate = d3.time.format("%Y-%m-%d").parse;
-    var formatTime = d3.time.format("%e %b");
-    
-    // Set the ranges
-    var x = d3.time.scale().range([0, width]);
-    var y = d3.scale.linear().range([height, 0]);
-    
-    // Define the axes
-    var xAxis = d3.svg.axis().scale(x)
-    .orient("bottom").ticks(5);
-    
-    var yAxis = d3.svg.axis().scale(y)
-    .orient("left").ticks(5);
-    
-    // Define the line
-    var valueline = d3.svg.line()
-    .x(function(d) { return x(d.date); })
-    .y(function(d) { return y(d.totalNum); });
-    
-    // Define the div for the tooltip
-    var div = d3.select("body").append("div")
-    .attr("class", "tooltip")
-    .style("opacity", 0);
-    
-    // Adds the svg canvas
-    var svg = d3.select("div#chart")
-    .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
-    
-    data.forEach(function(d) {
-                 d.date = parseDate(d.date);
-                 d.totalNum = +d.totalNum;
-    });
-    
-    // Scale the range of the data
-    x.domain(d3.extent(data, function(d) { return d.date; }));
-    y.domain([0, d3.max(data, function(d) { return d.totalNum; })]);
-    
-    // Add the valueline path.
-    svg.append("path")
-    .attr("class", "line")
-    .attr("d", valueline(data));
-    
-    // Add the scatterplot
-    svg.selectAll("dot")
-    .data(data)
-    .enter().append("circle")
-    .attr("r", 3)
-    .attr("cx", function(d) { return x(d.date); })
-    .attr("cy", function(d) { return y(d.totalNum); })
-    .on("mouseover", function(d) {
-        div.transition()
-        .duration(200)
-        .style("opacity", .9);
-        div.html(formatTime(d.date) + "<br/>"  + d.totalNum)
-        .style("left", (d3.event.pageX) + "px")
-        .style("top", (d3.event.pageY - 28) + "px");
-        })
-    .on("mouseout", function(d) {
-        div.transition()
-        .duration(500)
-        .style("opacity", 0);
-        });
-    
-    // Add the X Axis
-    svg.append("g")
-    .attr("class", "x axis")
-    .attr("transform", "translate(0," + height + ")")
-    .call(xAxis);
-    
-    // Add the Y Axis
-    svg.append("g")
-    .attr("class", "y axis")
-    .call(yAxis);
+function drawCompareGraph(contributors, timedate, minDate, maxDate, user01, user02, user03){
+	
+	loadSelectValue(contributors);
+	
+	var ids = ["nil","nil","nil"]; 
+	var valueLine, parseTime, svg;
+	var minDate = minDate;
+	var maxDate = maxDate;
+	
+	$(document).ready(function() {	
+		var margin = {top: 20, right: 20, bottom: 100, left: 50},
+		width = 960 - margin.left - margin.right,
+		height = 500 - margin.top - margin.bottom;
+	
+		valueline = d3.line()
+			.x(function(d) { return x(d.date); })
+			.y(function(d) { return y(d.totalNum); });
+	
+		svg = d3.select("#graph").append("svg")
+					.attr("width", width + margin.left + margin.right)
+					.attr("height", height + margin.top + margin.bottom)
+					.append("g")
+					.attr("transform","translate(" + margin.left + "," + margin.top + ")");
+	
+		parseTime = d3.timeParse("%Y-%m");
+		var mindate = parseTime(minDate);
+		var maxdate = parseTime(maxDate);
+		
+		var x = d3.scaleTime().domain([mindate,maxdate]).range([0, width]);
+		var y = d3.scaleLinear().domain([0,10]).range([height, 0]);
+	
+		svg.append("g")
+		  .attr("transform", "translate(0," + height + ")")
+		  .call(d3.axisBottom(x));
+	
+		 svg.append("g")
+		  .call(d3.axisLeft(y));
+		  
+		var name = user01;
+		document.getElementById("search1").value = name;
+		var toDraw = timedate[name];
+		drawLine(toDraw,"blue","#first",0);
+		ids[0] = "#first";
 
+		name = user02;
+		document.getElementById("search2").value = name;
+		toDraw = timedate[name];
+		drawLine(toDraw,"green","#second",1);
+		ids[1] = "#second";
+
+		name = user03;
+		document.getElementById("search3").value = name;
+		toDraw = timedate[name];
+		drawLine(toDraw,"red","#third",2);
+		ids[2] = "#third";
+		
+	});
+
+	function drawLine(linedate,color,id,idspos) {
+		if(ids[idspos] != "nil"){
+        	document.getElementById(id).remove();
+        } 	
+		
+		var temp = [];		
+		linedate.forEach(function(d) {
+			var tempD = Object.assign({}, d);
+			tempD.date = parseTime(tempD.date);
+			tempD.totalNum = tempD.totalNum;
+			temp.push(tempD);
+		});
+    
+	  	svg.append("path")
+	  		.attr("d", valueline(temp))
+	       	.attr("stroke", color)
+	       	.attr("stroke-width", 2)
+	        .attr("fill", "none")
+	        .attr("id",id);
+	}	
 }
 
-function drawTable(tableData, githubLink){
-    for (var i = 0; i < tableData.length; i++) {
-        var counter = tableData[i];
-        var row = document.createElement("tr");
-        var col1 = document.createElement("td"); //date
-        var col2 = document.createElement("td"); //hash
-        
-        var date = document.createTextNode(counter.date);
-        var a = document.createElement("a");
-        var hash = document.createTextNode(counter.hash);
-        a.appendChild(hash);
-        var link = githubLink.substring( 1, githubLink.indexOf(".git"));
-        link = link.replace(/^"(.*)"$/,'$1');
-        a.href = link+"/tree/"+counter.hash;
-        a.setAttribute('target','_blank');
-        
-        col1.appendChild(date);
-        col2.appendChild(a);
-        
-        row.appendChild(col1);
-        row.appendChild(col2);
-        
-        document.getElementById("tablebody").appendChild(row);
-    }
+function loadSelectValue(contributors){
+	for (i = 0; i < contributors.length; i++) { 
+		var counter = contributors[i];
+		var search1 = document.getElementById("search1");
+		var search2 = document.getElementById("search2");
+		var search3 = document.getElementById("search3");
+		var option1 = document.createElement("option");
+		var option2 = document.createElement("option");
+		var option3 = document.createElement("option");
+		option1.text = counter.Name;
+		option2.text = counter.Name;
+		option3.text = counter.Name;
+		option1.value = counter.Name;
+		option2.value = counter.Name;
+		option3.value = counter.Name;
+		search1.add(option1);
+		search2.add(option2);
+		search3.add(option3);
+	}
 }

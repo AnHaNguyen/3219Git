@@ -45,7 +45,7 @@
 <script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
 
-<script src="./assets/js/app03.js" type="text/javascript"></script>
+<script src="assets/js/app04.js" type="text/javascript"></script>
 
 
 <style>
