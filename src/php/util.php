@@ -1,4 +1,5 @@
 <?php
+    require_once('commit.php');
 	function trim_all( $str , $what = NULL , $with = ' ' ){
     	if( $what === NULL ) {
         //  Character      Decimal      Use
@@ -24,6 +25,18 @@
         }
         if (is_dir("../../repos/".$repo)) {
            chdir("../../repos/".$repo);
+        }
+    }
+
+    function sortCommitByDate($commit1, $commit2) {
+        $date1 = new DateTime($commit1->getDate());
+        $date2 = new DateTime($commit2->getDate());
+        if ($date1 < $date2) {
+            return -1;
+        } else if ($date1 > $date2) {
+            return 1;
+        } else {
+            return 0;
         }
     }
 ?>
