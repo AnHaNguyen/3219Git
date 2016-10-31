@@ -6,7 +6,6 @@
     include_once('./template/navbar.php');
     include_once('./php/controller.php');
     
-   
     if(isset($_SESSION['git_url']) && !empty($_SESSION['git_url']) && isset($_SESSION['git_username']) && !empty($_SESSION['git_username'])) {
         
         if(isset($_SESSION['git_start_date']) && !empty($_SESSION['git_start_date'])) {
@@ -16,8 +15,6 @@
         }
         $finalResult = generateTotalInsAndDelByDate($result);
         $result = json_encode($result);
-        //$resultOfContributors = execute('getcontributors',null,null,null,null,null,'','');
-        //$resultOfContributors = json_encode($resultOfContributors);
     }
     
     if (isset($_POST["submit"])) {
@@ -60,12 +57,13 @@
         
         return json_encode($list);
     }
-    
-    ?>
+	
+?>
 
 <link href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet" />
 <link href="./assets/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
-<script src="https://d3js.org/d3.v3.min.js"></script></script>
+	
+<script src="https://d3js.org/d3.v4.min.js"></script></script>
 <script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
 <script type="text/javascript" src="./assets/js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
@@ -73,32 +71,55 @@
 
 
 <style>
-    path {
-        stroke: steelblue;
-        stroke-width: 2;
-        fill: none;
-    }
+	/*body {
+  		font: 10px sans-serif;
+	}*/
 
-    .axis path,
-    .axis line {
-        fill: none;
-        stroke: grey;
-            stroke-width: 1;
-            shape-rendering: crispEdges;
-    }
-
-    div.tooltip {
-        position: absolute;
-        text-align: center;
-        width: 60px;
-        height: 30px;
-        padding: 2px;
-        font: 12px sans-serif;
-        background: lightsteelblue;
-        border: 0px;
-        border-radius: 8px;
-        pointer-events: none;
-    }
+	.axis path,
+	.axis line {
+	  fill: none;
+	  stroke: #000;
+	  shape-rendering: crispEdges;
+	}
+	
+	.x.axis path {
+	  display: none;
+	}
+	
+	.line {
+	  fill: none;
+	  stroke: steelblue;
+	  stroke-width: 1.5px;
+	}
+	
+	.overlay {
+	  fill: none;
+	  pointer-events: all;
+	}
+	
+	.focus circle {
+	  fill: none;
+	  stroke: steelblue;
+	}
+	
+	.row-centered {
+		text-align:center;
+	}
+	
+	.col-centered {
+		display:inline-block;
+		float:none;
+		/* reset the text-align */
+		text-align:left;
+		/* inline-block space fix */
+		margin-right:-4px;
+	}
+	
+	.col-fixed {
+		/* custom width */
+		width:320px;
+	}
+	
 </style>
 
 <div class="container">
@@ -125,7 +146,7 @@
         <div id="chart"></div>
     </div>
 
-    <div class="col-xs-7">
+    <div class="col-xs-12">
         <h4 class="sub-header">The following historical commit information, by author, was found.</h4>
         <br/>
         <div class="table-responsive">
@@ -140,12 +161,6 @@
         </table>
         </div>
     </div>
-
-    <div class="col-xs-5">
-        <div id="checkboxArea">
-        </div>
-    </div>
-</div>
 
 </div>
 
@@ -162,10 +177,6 @@
        forceParse: 0
     });
 
-    //var jsonData = '<?php echo $resultOfContributors ?>';
-    //var data = JSON.parse(jsonData);
-    //createCheckboxes(data);
-
     jsonData = '<?php echo $finalResult ?>';
     var tableData = '<?php echo $result ?>';
 
@@ -180,9 +191,8 @@
                           $('#sortable').DataTable();
                           });
     }
-
-
-    </script>
+	
+</script>
 
 </div> <!-- /container -->
 

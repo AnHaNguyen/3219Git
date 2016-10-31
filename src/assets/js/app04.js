@@ -1,26 +1,27 @@
 function drawLineGraph(data){
     
     // Set the dimensions of the canvas / graph
-    var margin = {top: 20, right: 50, bottom: 30, left: 50},
+    var margin = {top: 30, right: 20, bottom: 30, left: 50},
     width = 960 - margin.left - margin.right,
-    height = 350 - margin.top - margin.bottom;
+    height = 300 - margin.top - margin.bottom;
     
     // Parse the date / time
-    var parseDate = d3.timeParse("%Y-%m-%d");
-    var formatTime = d3.timeFormat("%e %b");
-	var bisectDate = d3.bisector(function(d) { return d.date; }).left;
+    var parseDate = d3.time.format("%Y-%m-%d").parse;
+    var formatTime = d3.time.format("%e %b");
     
     // Set the ranges
-    var x = d3.scaleTime().range([0, width]);
-    var y = d3.scaleLinear().range([height, 0]);
+    var x = d3.time.scale().range([0, width]);
+    var y = d3.scale.linear().range([height, 0]);
     
     // Define the axes
-    var xAxis = d3.axisBottom().scale(x).ticks(5);
+    var xAxis = d3.svg.axis().scale(x)
+    .orient("bottom").ticks(5);
     
-    var yAxis = d3.axisLeft().scale(y).ticks(5);
+    var yAxis = d3.svg.axis().scale(y)
+    .orient("left").ticks(5);
     
     // Define the line
-    var valueline = d3.line()
+    var valueline = d3.svg.line()
     .x(function(d) { return x(d.date); })
     .y(function(d) { return y(d.totalNum); });
     
@@ -51,36 +52,28 @@ function drawLineGraph(data){
     svg.append("path")
     .attr("class", "line")
     .attr("d", valueline(data));
- 
-	 var focus = svg.append("g")
-      .attr("class", "focus")
-      .style("display", "none");
-
-	  focus.append("circle")
-		  .attr("r", 4.5);
-	
-	  focus.append("text")
-		  .attr("x", 9)
-		  .attr("dy", ".35em");
-	
-	  svg.append("rect")
-		  .attr("class", "overlay")
-		  .attr("width", width)
-		  .attr("height", height)
-		  .on("mouseover", function() { focus.style("display", null); })
-		  .on("mouseout", function() { focus.style("display", "none"); })
-		  .on("mousemove", mousemove);
-	
-	  function mousemove() {
-		var x0 = x.invert(d3.mouse(this)[0]),
-			i = bisectDate(data, x0, 1),
-			d0 = data[i - 1],
-			d1 = data[i],
-			d = x0 - d0.date > d1.date - x0 ? d1 : d0;
-		focus.attr("transform", "translate(" + x(d.date) + "," + y(d.totalNum) + ")");
-		//focus.select("text").text(formatTime(d.date) + " : " + d.totalNum);}
-    	focus.select("text").text(d.totalNum);}
-	
+    
+    // Add the scatterplot
+    svg.selectAll("dot")
+    .data(data)
+    .enter().append("circle")
+    .attr("r", 3)
+    .attr("cx", function(d) { return x(d.date); })
+    .attr("cy", function(d) { return y(d.totalNum); })
+    .on("mouseover", function(d) {
+        div.transition()
+        .duration(200)
+        .style("opacity", .9);
+        div.html(formatTime(d.date) + "<br/>"  + d.totalNum)
+        .style("left", (d3.event.pageX) + "px")
+        .style("top", (d3.event.pageY - 28) + "px");
+        })
+    .on("mouseout", function(d) {
+        div.transition()
+        .duration(500)
+        .style("opacity", 0);
+        });
+    
     // Add the X Axis
     svg.append("g")
     .attr("class", "x axis")
