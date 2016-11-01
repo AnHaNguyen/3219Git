@@ -22,7 +22,7 @@ function drawCompareGraph(contributors, timedate, minDate, maxDate, user01, user
 					.append("g")
 					.attr("transform","translate(" + margin.left + "," + margin.top + ")");
 	
-		parseTime = d3.timeParse("%Y-%m");
+		parseTime = d3.timeParse("%Y-%m-%d");
 		var mindate = parseTime(minDate);
 		var maxdate = parseTime(maxDate);
 		

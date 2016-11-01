@@ -12,27 +12,26 @@
 		
 		if(isset($_SESSION['user01']) && !empty($_SESSION['user01']) && isset($_SESSION['user02']) && !empty($_SESSION['user02'])){
 			$result1 = execute('getcommithistory',null,null,$_SESSION['user01'],$_SESSION['git_start_date'],null,'','');
-			$finalResult = generateTotalInsAndDelByMonth($_SESSION['user01'], $result1);
+			$finalResult = generateTotalInsAndDelByDate($_SESSION['user01'], $result1);
 			$result2 = execute('getcommithistory',null,null,$_SESSION['user02'],$_SESSION['git_start_date'],null,'','');
-        	$finalResult2 = generateTotalInsAndDelByMonth($_SESSION['user02'], $result2);
+        	$finalResult2 = generateTotalInsAndDelByDate($_SESSION['user02'], $result2);
 		
 			if(isset($_SESSION['user03']) && !empty($_SESSION['user03'])){
-				$_SESSION['user03'] = $_POST['search3'];
 				$result3 = execute('getcommithistory',null,null,$_SESSION['user03'],$_SESSION['git_start_date'],null,'','');
-				$finalResult3 = generateTotalInsAndDelByMonth($_SESSION['user03'], $result3);
+				$finalResult3 = generateTotalInsAndDelByDate($_SESSION['user03'], $result3);
 				$timedata = array($_SESSION['user01'] => $finalResult, $_SESSION['user02']=> $finalResult2, $_SESSION['user03'] => $finalResult3);
 			} else {
 				$timedata = array($_SESSION['user01'] => $finalResult, $_SESSION['user02']=> $finalResult2);
 			}
 		} else {
-			
+			echo "line 28 ".$_SESSION['git_username'];
 			if(isset($_SESSION['git_start_date']) && !empty($_SESSION['git_start_date'])) {
 				$result = execute('getcommithistory', null, null, $_SESSION['git_username'], $_SESSION['git_start_date'], null,'','');
 			} else {
 				$result = execute('getcommithistory', null, null, $_SESSION['git_username'], null, null,'','');
 			}
 			
-			$finalResult = generateTotalInsAndDelByMonth($_SESSION['git_username'], $result);
+			$finalResult = generateTotalInsAndDelByDate($_SESSION['git_username'], $result);
 			$timedata = array($_SESSION['git_username'] => $finalResult);
 		}
 		$timedata = json_encode($timedata);
@@ -44,15 +43,15 @@
 		$_SESSION['user02'] = $_POST['search2'];
 		
         $result1 = execute('getcommithistory',null,null,$_SESSION['user01'],$_SESSION['git_start_date'],null,'','');
-        $finalResult = generateTotalInsAndDelByMonth($_SESSION['user01'], $result1);
+        $finalResult = generateTotalInsAndDelByDate($_SESSION['user01'], $result1);
 		
 		$result2 = execute('getcommithistory',null,null,$_SESSION['user02'],$_SESSION['git_start_date'],null,'','');
-        $finalResult2 = generateTotalInsAndDelByMonth($_SESSION['user02'], $result2);
+        $finalResult2 = generateTotalInsAndDelByDate($_SESSION['user02'], $result2);
 		
 		if(($_SESSION['git_total_contributors']) > 2 ) {
 			$_SESSION['user03'] = $_POST['search3'];
 			$result3 = execute('getcommithistory',null,null,$_SESSION['user03'],$_SESSION['git_start_date'],null,'','');
-			$finalResult3 = generateTotalInsAndDelByMonth($_SESSION['user03'], $result3);
+			$finalResult3 = generateTotalInsAndDelByDate($_SESSION['user03'], $result3);
 			$timedata = array($_SESSION['user01'] => $finalResult, $_SESSION['user02']=> $finalResult2, $_SESSION['user03'] => $finalResult3);
 		} else {
 			$timedata = array($_SESSION['user01'] => $finalResult, $_SESSION['user02']=> $finalResult2);
@@ -60,12 +59,10 @@
 		$timedata = json_encode($timedata);
     }
 	  
-	function generateTotalInsAndDelByMonth($name, $result){
+	function generateTotalInsAndDelByDate($name, $result){
 		
-		global $smallestYear;
-		global $smallestMonth;
-		global $largestYear;
-		global $largestMonth;
+		global $smallestDate;
+		global $largestDate;
 		
         $result = json_encode($result);
         $jsondata = json_decode($result, true);
@@ -73,56 +70,46 @@
         $list = array();
         $previousMonth = null;
         $currentMonth = null;
+		
+		$previousDate = null;
+		$currentDate = null;
         $totalNum = 0;
-        foreach ($jsondata as $res){
-            if($previousMonth == null){
-                $previousMonth = getMonth($res["date"]);
-				$previousYear = getYear($res["date"]);
+		
+		foreach ($jsondata as $res){
+            if($previousDate == null){
+                $previousDate = $res["date"];
+				$smallestDate = $res["date"];
                 $totalNum = 1;
             } else {
-                $currentMonth = getMonth($res["date"]);
-                if((int)$previousMonth != (int)$currentMonth){
-                    $out["date"] = $previousYear ."-".$previousMonth;
+                $currentDate = $res["date"];
+                if($previousDate != $currentDate){
+                    $out["date"] = $previousDate;
                     $out["totalNum"] = $totalNum;
                     array_push($list, $out);
 					
-					if($smallestMonth == '' && $smallestYear == ''){
-						$smallestMonth = $previousMonth;
-						$smallestYear = $previousYear;
+					if($previousDate < $smallestDate){
+						$smallestDate = $previousDate;	
 					}
 					
-					if ((int)$previousYear < (int)$smallestYear){
-						$smallestYear = $previousYear;			
-						if ((int)$previousMonth < (int)$smallestMonth){
-							$smallestMonth = $previousMonth;	
-						}
-					}
-					
-					$totalNum = 1;
-                } else {
-					$totalNum += 1;
-				}
-				$previousMonth = getMonth($res["date"]);
-				$previousYear = getYear($res["date"]);
+                    $totalNum = 0;
+                }
             }
+            $totalNum += 1;
+            $previousDate = $res["date"];
         }
-        if($previousMonth != null){
-            $out["date"] = $previousYear ."-".$previousMonth;
+        if($previousDate != null){
+            $out["date"] = $previousDate;
             $out["totalNum"] = $totalNum;
             array_push($list, $out);
 			
-			if($largestMonth == '' && $largestYear == ''){
-				$largestMonth = $previousMonth;
-				$largestYear = $previousYear;
-			}
-			
-			if ((int)$previousYear > (int)$largestYear){
-				$largestYear = $previousYear;					
-				if ((int)$previousMonth > (int)$largestMonth){
-					$largestMonth = $previousMonth;
+			if($largestDate == null){
+				$largestDate = $previousDate;	
+			} else {
+				if($previousDate > $largestDate){
+					$largestDate = $previousDate;	
 				}
 			}
-        }
+		}
 		
         return $list;
     }
@@ -133,6 +120,10 @@
 	
 	function getYear($date){
 		return date('Y', strtotime($date));	
+	}
+	
+	function getDay($date){
+		return date('d', strtotime($date));	
 	}
     
     ?>
@@ -195,8 +186,8 @@
 	
 	var timedate = <?php echo $timedata ?>;
 	
-	var minDate = "<?php echo $smallestYear."-".$smallestMonth ?>";
-	var maxDate = "<?php echo $largestYear."-".$largestMonth ?>";
+	var minDate = "<?php echo $smallestDate ?>";
+	var maxDate = "<?php echo $largestDate ?>";
 	
 	var user01 = '<?php echo $_SESSION['user01'] ?>';
 	var user02 = '<?php echo $_SESSION['user02'] ?>';
