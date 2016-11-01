@@ -41,18 +41,23 @@ function drawCompareGraph(contributors, timedate, minDate, maxDate, user01, user
 		var toDraw = timedate[name];
 		drawLine(toDraw,"blue","#first",0);
 		ids[0] = "#first";
+		
+		if (user02){
+			name = user02;
+			document.getElementById("search2").value = name;
+			toDraw = timedate[name];
+			drawLine(toDraw,"green","#second",1);
+			ids[1] = "#second";
+		}
 
-		name = user02;
-		document.getElementById("search2").value = name;
-		toDraw = timedate[name];
-		drawLine(toDraw,"green","#second",1);
-		ids[1] = "#second";
+		if (user03){
+			name = user03;
+			document.getElementById("search3").value = name;
+			toDraw = timedate[name];
+			drawLine(toDraw,"red","#third",2);
+			ids[2] = "#third";
+		}
 
-		name = user03;
-		document.getElementById("search3").value = name;
-		toDraw = timedate[name];
-		drawLine(toDraw,"red","#third",2);
-		ids[2] = "#third";
 		
 	});
 
