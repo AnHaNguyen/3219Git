@@ -4,7 +4,7 @@
 	//git ls-files
 	//'git blame --line-porcelain $file | sed -n \'s/^author //p\' | sort | uniq -c | sort -rn'
 	// chdir('../../repos/SPA/');
-	// $list = getHistoryFile('source/DesignExtractor.cpp');
+	// $list = getHistoryFile('source/DesignExtractor.cpp',array(10,18));
 	// echo(json_encode($list));
 
 	function getHistoryUser($name, $date=null) {	//$date in ISO form: YYYY-MM-DD
@@ -31,9 +31,9 @@
 		if ($range === null) {
 			//$command = "git log --reverse --pretty=format:\"%h %an %ci\" ".$file;
 			//$command = "git log --reverse --date=iso --abbrev-commit --stat ".$file;
-			$command = 'git blame -c --date=short '.$file;
+			$command = "git blame -c --date=short \"".$file."\"";
 		} else {
-			$command = 'git blame -c --date=short -L '.$range[0].','.$range[1].' '.$file;
+			$command = "git blame -c --date=short -L ".$range[0].",".$range[1]." \"".$file."\"";
 		}
 		$out = array();
 		$list = array();
