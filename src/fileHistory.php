@@ -22,20 +22,22 @@
         //https://github.com/scrapy/scrapy <- cannot clone
         //102 - https://github.com/leereilly/games
         
-        $filename = $_POST['basic-filename'];
-        $_SESSION['git_filename'] = $filename;
-        
-        $startLine = $_POST['basic-start-line'];
-        $endLine = $_POST['basic-end-line'];
-        
-        if($startLine != '' && $endLine != ''){
-            $result = execute('getfilehistory',null,null,null,null,$filename,$startLine,$endLine);
-        } else {
-            $result = execute('getfilehistory',null,null,null,null,$filename,'','');
-        }
-        
-        $result = json_encode($result);
-        echo $result;
+		if(empty($_POST['basic-filename'])){
+			$message = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Please insert a filename!</div>'; 
+		} else {
+			$filename = $_POST['basic-filename'];
+			$_SESSION['git_filename'] = $filename;
+			
+			$startLine = $_POST['basic-start-line'];
+			$endLine = $_POST['basic-end-line'];
+			
+			if($startLine != '' && $endLine != ''){
+				$result = execute('getfilehistory',null,null,null,null,$filename,$startLine,$endLine);
+			} else {
+				$result = execute('getfilehistory',null,null,null,null,$filename,'','');
+			}
+				$result = json_encode($result);
+			}
     }
     
     ?>
@@ -53,6 +55,11 @@
 </style>
 
 <div class="container">
+
+<!-- Main component for a primary marketing message or call to action -->
+	<div id="response">
+		<?php echo $message;?>
+	</div>
 
 <!-- Main component for a primary marketing message or call to action -->
 <div class="jumbotron">

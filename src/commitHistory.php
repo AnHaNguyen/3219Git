@@ -18,11 +18,16 @@
     }
     
     if (isset($_POST["submit"])) {
-        $startDate = $_POST['startDate'];
-        $_SESSION['git_start_date'] = $startDate;
-        $result = execute('getcommithistory',null,null,$_SESSION['git_username'],$startDate,null,'','');
-        $finalResult = generateTotalInsAndDelByDate($result);
-        $result = json_encode($result);
+		
+		if(empty($_POST['startDate'])){
+			$message = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Please insert a date!</div>'; 
+		} else {
+			$startDate = $_POST['startDate'];
+			$_SESSION['git_start_date'] = $startDate;
+			$result = execute('getcommithistory',null,null,$_SESSION['git_username'],$startDate,null,'','');
+			$finalResult = generateTotalInsAndDelByDate($result);
+			$result = json_encode($result);
+		}
     }
     
     function generateTotalInsAndDelByDate($result){
@@ -123,6 +128,11 @@
 </style>
 
 <div class="container">
+
+ <!-- Main component for a primary marketing message or call to action -->
+	<div id="response">
+		<?php echo $message;?>
+	</div>
 
 <!-- Main component for a primary marketing message or call to action -->
 <div class="jumbotron">
