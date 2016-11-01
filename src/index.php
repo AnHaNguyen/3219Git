@@ -14,20 +14,23 @@
     if (isset($_POST["submit"])) {
         //https://github.com/jiaminw12/cs2102_stuffSharing
         //https://github.com/nhaarman/ListViewAnimations
-        
-        $userLink = $_POST['basic-url'];
-        $response = execute($command='addrepo',$userLink);
-        
-        if (strcmp($response,"sucess")){
-            $res = explode('/', parse_url($userLink, PHP_URL_PATH));
-            $username = $res[1];
-            $_SESSION['git_username'] = $username;
-            $result = execute('getcontributors',null,null,null,null,null,'','');
-			
-			$_SESSION['git_contributors'] = getContributorsList($result);
-			
-            $result = json_encode($result);
-        }
+
+		if(empty($_POST['basic-url'])){
+			$message = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Please insert a Git URL!</div>'; 
+		} else {
+			$userLink = $_POST['basic-url'];
+			$response = execute($command='addrepo',$userLink);
+			if (strcmp($response,"sucess")){
+				$res = explode('/', parse_url($userLink, PHP_URL_PATH));
+				$username = $res[1];
+				$_SESSION['git_username'] = $username;
+				$result = execute('getcontributors',null,null,null,null,null,'','');
+				
+				$_SESSION['git_contributors'] = getContributorsList($result);
+				
+				$result = json_encode($result);
+			}
+		}
     }
 	
 	function getContributorsList($result){
@@ -67,6 +70,11 @@ svg{
 
 
 <div class="container">
+
+ <!-- Main component for a primary marketing message or call to action -->
+	<div id="response">
+		<?php echo $message;?>
+	</div>
 
 <!-- Main component for a primary marketing message or call to action -->
 <div class="jumbotron">
