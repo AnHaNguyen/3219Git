@@ -142,11 +142,11 @@
 
 <div class="row">
     <h3><?php echo $_SESSION['git_username']; ?></h3>
-    <div class="col-xs-12">
+    <div class="col-sm-12">
         <div id="chart"></div>
     </div>
 
-    <div class="col-xs-12">
+    <div class="col-sm-12">
         <h4 class="sub-header">The following historical commit information, by author, was found.</h4>
         <br/>
         <div class="table-responsive">
