@@ -5,8 +5,9 @@
     include_once('./template/header.php');
     include_once('./template/navbar.php');
     include_once('./php/controller.php');
+	
+	$repoName = $_SESSION['repo_name'];
     
-   
     /*if(isset($_SESSION['git_url']) && !empty($_SESSION['git_url'])) {
         
         if(isset($_SESSION['git_start_date']) && !empty($_SESSION['git_start_date'])) {
@@ -26,6 +27,7 @@
 			$message = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Please insert a filename!</div>'; 
 		} else {
 			$filename = $_POST['basic-filename'];
+			
 			$_SESSION['git_filename'] = $filename;
 			
 			$startLine = $_POST['basic-start-line'];
@@ -38,12 +40,14 @@
 			}
 				$result = json_encode($result);
 			}
-    }
-    
+   		}
+	
     ?>
 
 <link href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet" />
-<script src="https://d3js.org/d3.v3.min.js"></script></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.js"></script>
+<script src="https://d3js.org/d3.v4.min.js"></script></script>
 <script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
 
@@ -51,7 +55,31 @@
 
 
 <style>
-
+	.ui-autocomplete {
+		position: absolute;
+		z-index: 1000;
+		cursor: default;
+		padding: 0;
+		margin-top: 2px;
+		list-style: none;
+		background-color: #ffffff;
+		border: 1px solid #ccc;
+		-webkit-border-radius: 5px;
+		   -moz-border-radius: 5px;
+				border-radius: 5px;
+		-webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+		   -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+				box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+	}
+	.ui-autocomplete > li {
+	  padding: 3px 20px;
+	}
+	.ui-autocomplete > li.ui-state-focus {
+	  background-color: #DDD;
+	}
+	.ui-helper-hidden-accessible {
+	  display: none;
+	}
 </style>
 
 <div class="container">
@@ -78,8 +106,26 @@
 
 
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-sm-12">
         <div id="chart"></div>
+    </div>
+	
+	<div class="col-sm-12">
+        <h3 class="sub-header"><?php echo $filename; ?></h3>
+        <br/>
+        <div class="table-responsive">
+            <table id="sortable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th class="col-md-1">Hash</th>
+                        <th class="col-md-2">Author</th>
+                        <th class="col-md-3">Date</th>
+                        <th class="col-md-3">Lines</th>
+                    </tr>
+                </thead>
+                <tbody id="tablebody01"></tbody>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -87,21 +133,23 @@
 
 <script type="text/javascript">
 
-    /*jsonData = '<?php echo $finalResult ?>';
-    var tableData = '<?php echo $result ?>';
-
-    if (jsonData != '[]' && tableData != '[]'){
-        data = JSON.parse(jsonData);
-        drawLineGraph(data);
-        
-        tableData = JSON.parse(tableData);
-        var githubLink = '<?php echo json_encode($_SESSION['git_url']) ?>';
-        drawTable(tableData, githubLink);
-        $(document).ready(function() {
-                          $('#sortable').DataTable();
-                          });
-    }*/
-
+	$(function() {
+		var availableTags = <?php include('autocomplete.php'); ?>;
+		$( "#basic-filename" ).autocomplete({
+			source: availableTags,
+        	autoFocus:true
+		});
+	});
+	
+	var jsonData = '<?php echo $result ?>';
+	if (jsonData != ''){
+		document.getElementById("basic-filename").value = '<?php echo $filename ?>';
+		var data = JSON.parse(jsonData);
+		drawTable(data);
+		$(document).ready(function() {
+			$('#sortable').DataTable();
+		});
+	}
 
     </script>
 

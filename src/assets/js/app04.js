@@ -87,28 +87,37 @@ function drawLineGraph(data){
 
 }
 
-function drawTable(tableData, githubLink){
-    for (var i = 0; i < tableData.length; i++) {
-        var counter = tableData[i];
+function drawTable(data){
+    /*for (var i = 0; i < data.length; i++) {
+        var counter = data[i];
+        var insertNum = counter.totalIns;
+        var deleteNum = counter.totalDel;
+        overallInsertAndDeletions += insertNum + deleteNum;
+    }*/
+    
+    for (var i = 0; i < data.length; i++) {
+        var counter = data[i];
         var row = document.createElement("tr");
-        var col1 = document.createElement("td"); //date
-        var col2 = document.createElement("td"); //hash
+        var col1 = document.createElement("td"); //hash
+        var col2 = document.createElement("td"); //author
+        var col3 = document.createElement("td"); //date
+        var col4 = document.createElement("td"); //lines
         
-        var date = document.createTextNode(counter.date);
-        var a = document.createElement("a");
         var hash = document.createTextNode(counter.hash);
-        a.appendChild(hash);
-        var link = githubLink.substring( 1, githubLink.indexOf(".git"));
-        link = link.replace(/^"(.*)"$/,'$1');
-        a.href = link+"/tree/"+counter.hash;
-        a.setAttribute('target','_blank');
-        
-        col1.appendChild(date);
-        col2.appendChild(a);
+        var author = document.createTextNode(counter.author);
+        var date = document.createTextNode(counter.date);
+        var lines = document.createTextNode(counter.lines);
+		console.log(lines.length);
+        col1.appendChild(hash);
+        col2.appendChild(author);
+        col3.appendChild(date);
+        col4.appendChild(lines);
         
         row.appendChild(col1);
         row.appendChild(col2);
+        row.appendChild(col3);
+        row.appendChild(col4);
         
-        document.getElementById("tablebody").appendChild(row);
+        document.getElementById("tablebody01").appendChild(row);
     }
 }
