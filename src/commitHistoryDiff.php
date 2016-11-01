@@ -10,10 +10,12 @@
 		
 		// check whether the cuurent and previous is the same contributors list
 		if (isset($_SESSION['current_contributors']) && !empty($_SESSION['current_contributors'])){
+			//echo "line13";
 			$listContributors = $_SESSION['git_contributors'];
 			$jsonData1 = $_SESSION['current_contributors'];
 			$jsonData2 = $listContributors;
-			if($jsonData1 == $jsonData2){
+			if($jsonData1 === $jsonData2){
+				//echo "line18";
 				if(isset($_SESSION['user01']) && !empty($_SESSION['user01']) && isset($_SESSION['user02']) && !empty($_SESSION['user02'])){
 					$result1 = execute('getcommithistory',null,null,$_SESSION['user01'],$_SESSION['git_start_date'],null,'','');
 					$finalResult = generateTotalInsAndDelByDate($_SESSION['user01'], $result1);
@@ -21,43 +23,46 @@
 					$finalResult2 = generateTotalInsAndDelByDate($_SESSION['user02'], $result2);
 				
 					if(isset($_SESSION['user03']) && !empty($_SESSION['user03'])){
+						//echo "line26";
 						$result3 = execute('getcommithistory',null,null,$_SESSION['user03'],$_SESSION['git_start_date'],null,'','');
 						$finalResult3 = generateTotalInsAndDelByDate($_SESSION['user03'], $result3);
 						$timedata = array($_SESSION['user01'] => $finalResult, $_SESSION['user02']=> $finalResult2, $_SESSION['user03'] => $finalResult3);
 					} else {
 						$timedata = array($_SESSION['user01'] => $finalResult, $_SESSION['user02']=> $finalResult2);
 					}
+				} else {
+					//echo "line 34";
+					$result = execute('getcommithistory', null, null, $_SESSION['git_username'], $_SESSION['git_start_date'], null,'','');
+					$_SESSION['user01'] = $_SESSION['git_username'];
+					$finalResult = generateTotalInsAndDelByDate($_SESSION['git_username'], $result);
+					$timedata = array($_SESSION['git_username'] => $finalResult);
 				}
 			} else {
-				unset($_SESSION['user01']);
-				unset($_SESSION['user02']);
-				unset($_SESSION['user03']);
-				if(isset($_SESSION['git_start_date']) && !empty($_SESSION['git_start_date'])) {
-					$result = execute('getcommithistory', null, null, $_SESSION['git_username'], $_SESSION['git_start_date'], null,'','');
-				} else {
-					$result = execute('getcommithistory', null, null, $_SESSION['git_username'], null, null,'','');
-				}
-				$_SESSION['user01'] = $_SESSION['git_username'];
-				$finalResult = generateTotalInsAndDelByDate($_SESSION['git_username'], $result);
-				$timedata = array($_SESSION['git_username'] => $finalResult);
+				//echo "line35";
+				$timedata = isNewList();
 			}
 		} else {
+			//echo "line49";
 			$listContributors = $_SESSION['git_contributors'];
-			unset($_SESSION['user01']);
-			unset($_SESSION['user02']);
-			unset($_SESSION['user03']);
-			if(isset($_SESSION['git_start_date']) && !empty($_SESSION['git_start_date'])) {
-				$result = execute('getcommithistory', null, null, $_SESSION['git_username'], $_SESSION['git_start_date'], null,'','');
-			} else {
-				$result = execute('getcommithistory', null, null, $_SESSION['git_username'], null, null,'','');
-			}
-				$_SESSION['user01'] = $_SESSION['git_username'];
-				$finalResult = generateTotalInsAndDelByDate($_SESSION['git_username'], $result);
-				$timedata = array($_SESSION['git_username'] => $finalResult);
+			$timedata = isNewList();
 		}
-			
 		$timedata = json_encode($timedata);
     }
+	
+	function isNewList(){
+		unset($_SESSION['user01']);
+		unset($_SESSION['user02']);
+		unset($_SESSION['user03']);
+		if(isset($_SESSION['git_start_date']) && !empty($_SESSION['git_start_date'])) {
+			$result = execute('getcommithistory', null, null, $_SESSION['git_username'], $_SESSION['git_start_date'], null,'','');
+		} else {
+			$result = execute('getcommithistory', null, null, $_SESSION['git_username'], null, null,'','');
+		}
+		$_SESSION['user01'] = $_SESSION['git_username'];
+		$finalResult = generateTotalInsAndDelByDate($_SESSION['git_username'], $result);
+		$timedata = array($_SESSION['git_username'] => $finalResult);
+		return $timedata;
+	}
 	
 	if (isset($_POST["submit"])) {
 		$_SESSION['current_contributors'] = $_SESSION['git_contributors'];
