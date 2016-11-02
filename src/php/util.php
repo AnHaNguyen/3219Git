@@ -23,8 +23,8 @@
         } else {//testing
             exit("Session does not exist");
         }
-        if (is_dir("../../repos/".$repo)) {
-           chdir("../../repos/".$repo);
+        if (isset($_SESSION['dir'])) {
+            chdir($_SESSION['dir']);
         }
     }
 

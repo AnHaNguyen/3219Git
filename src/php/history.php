@@ -8,7 +8,7 @@
 	// echo(json_encode($list));
 
 	function getHistoryUser($name, $date=null) {	//$date in ISO form: YYYY-MM-DD
-		//redirect();
+		redirect();
 		if ($date === null) {
 			$command = "git log --reverse --author=\"".$name."\" --pretty=format:\"%h %ci\"";
 		} else {
@@ -27,7 +27,7 @@
 	}
 
 	function getHistoryFile($file, $range=null) {
-		//redirect();
+		redirect();
 		if ($range === null) {
 			//$command = "git log --reverse --pretty=format:\"%h %an %ci\" ".$file;
 			//$command = "git log --reverse --date=iso --abbrev-commit --stat ".$file;
