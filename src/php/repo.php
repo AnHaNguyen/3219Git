@@ -1,5 +1,4 @@
 <?php
-	define('DIR',"../repos/");
 	class Repo {
 		var $url;
 		var $repoName;	
@@ -9,14 +8,17 @@
 		}
 	
 		function initialize() {
-			if (!is_dir(DIR)) {
-				mkdir(DIR);		
+			chdir(__DIR__);		//need to go back to initial directory to get correct absolute path
+			$dir = "../../repos/";
+			if (!is_dir($dir)) {
+				mkdir($dir);		
 			}
 
-			chdir(DIR);
+			chdir($dir);
 			$this->doClone();
 			chdir($this->repoName);
-			$_SESSION['dir'] = getcwd();
+			$_SESSION['dir'] = getcwd();	
+			
 			$_SESSION['git_url'] = $this->url;
 			$_SESSION['repo_name'] = $this->repoName;
 		}

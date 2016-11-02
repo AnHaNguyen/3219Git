@@ -23,7 +23,7 @@
         } else {//testing
             exit("Session does not exist");
         }
-        if (isset($_SESSION['dir'])) {
+        if (isset($_SESSION['dir']) && is_dir($_SESSION['dir'])) {
             chdir($_SESSION['dir']);
         }
     }
