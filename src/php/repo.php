@@ -16,6 +16,7 @@
 			chdir(DIR);
 			$this->doClone();
 			chdir($this->repoName);
+			$_SESSION['dir'] = getcwd();
 			$_SESSION['git_url'] = $this->url;
 			$_SESSION['repo_name'] = $this->repoName;
 		}

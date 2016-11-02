@@ -7,7 +7,7 @@
 	// echo(json_encode($list));
 	
 	function getAllUsers() {
-		//redirect();
+		redirect();
 		$out = array();
 		exec("git shortlog -sn", $out);
 		$users = array();
@@ -41,6 +41,7 @@
 	}
 
 	function getLines() {
+		redirect();
 		$out = array();
 		$command1 = 'git ls-files';
 		exec($command1, $out);
