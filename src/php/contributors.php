@@ -2,6 +2,8 @@
 	require_once("user.php");
 	require_once("util.php");
 	require_once("history.php");
+	ini_set('memory_limit','16M');
+	ini_set('max_execution_time', 300);
 	// chdir('../../repos/SPA/');
 	// $list = getLines();
 	// echo(json_encode($list));
@@ -11,18 +13,20 @@
 		$out = array();
 		exec("git shortlog -sn", $out);
 		$users = array();
-
 		foreach($out as $line) {
 			$line = trim_all($line);
+
 			$pos = strpos($line, " ");
 			
 			$num = intval(substr($line, 0, $pos));
 			$word = substr($line, $pos+1);
+			$output = getInsAndDel($word);
 			$user = new User($word, $num);
-			$output = getInsAndDel($word);	
 			$user->setTotal($output[0], $output[1]);
+	
 			array_push($users, $user);
 		}
+		// echo(json_encode($users));
 		return $users;
 	}
 
