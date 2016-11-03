@@ -6,7 +6,8 @@
 		var $totalDel;
 
 		function __construct($persons_name, $commit_num) {		
-			$this->name = $persons_name;
+			$this->name = utf8_encode($persons_name);		//encode username to be able to run json_encode
+			$this->name = str_replace(array("'", "\"", "&quot;"), "", $this->name);	//escape quotation so the json can be parsed correctly
 			$this->commit_num = $commit_num;		
 		}
 

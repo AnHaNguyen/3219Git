@@ -7,7 +7,8 @@
 
 		function __construct($hash, $author, $date) {
 			$this->hash = $hash;
-			$this->author = $author;
+			$this->author = utf8_encode($author); //encode username to be able to run json_encode
+			$this->author = str_replace(array("'", "\"", "&quot;"), "", $this->author);	//escape quotation so the json can be parsed correctly
 			$this->date = $date;
 		}
 

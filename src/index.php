@@ -1,7 +1,7 @@
 <?php
     session_start();
     $current_page = 'Home';
-    
+    ini_set('max_execution_time', 300);
     include_once('./template/header.php');
     include_once('./template/navbar.php');
     include_once('./php/controller.php');
