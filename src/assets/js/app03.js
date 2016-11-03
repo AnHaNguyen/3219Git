@@ -1,4 +1,4 @@
-function drawCompareGraph(contributors, timedate, minDate, maxDate, user01, user02, user03){
+function drawCompareGraph(contributors, timedate, minDate, maxDate, maxYValue, user01, user02, user03){
 	
 	loadSelectValue(contributors);
 	
@@ -27,7 +27,7 @@ function drawCompareGraph(contributors, timedate, minDate, maxDate, user01, user
 		var maxdate = parseTime(maxDate);
 		
 		var x = d3.scaleTime().domain([mindate,maxdate]).range([0, width]);
-		var y = d3.scaleLinear().domain([0,10]).range([height, 0]);
+		var y = d3.scaleLinear().domain([0,maxYValue]).range([height, 0]);
 	
 		svg.append("g")
 		  .attr("transform", "translate(0," + height + ")")
@@ -48,6 +48,8 @@ function drawCompareGraph(contributors, timedate, minDate, maxDate, user01, user
 			toDraw = timedate[name];
 			drawLine(toDraw,"green","#second",1);
 			ids[1] = "#second";
+		} else {
+			document.getElementById("search2").selectedIndex = randomNumberFromRange(document.getElementById("search2").value.length);		
 		}
 
 		if (user03){
@@ -56,6 +58,8 @@ function drawCompareGraph(contributors, timedate, minDate, maxDate, user01, user
 			toDraw = timedate[name];
 			drawLine(toDraw,"red","#third",2);
 			ids[2] = "#third";
+		} else {
+			document.getElementById("search3").selectedIndex = randomNumberFromRange(document.getElementById("search3").value.length);
 		}
 
 		
@@ -102,4 +106,9 @@ function loadSelectValue(contributors){
 		search2.add(option2);
 		search3.add(option3);
 	}
+}
+
+function randomNumberFromRange(valueLength)
+{
+    return  Math.floor(Math.random()*(valueLength)+1);
 }

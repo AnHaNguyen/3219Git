@@ -67,6 +67,7 @@
 	if (isset($_POST["submit"])) {
 		$_SESSION['current_contributors'] = $_SESSION['git_contributors'];
 		$timedata = array();
+		$_SESSION['git_start_date'] = $_POST['startDate'];
         $_SESSION['user01'] = $_POST['search1'];
 		$_SESSION['user02'] = $_POST['search2'];
 		
@@ -91,6 +92,7 @@
 		
 		global $smallestDate;
 		global $largestDate;
+		global $maxYAxisValue;
 		
         $result = json_encode($result);
         $jsondata = json_decode($result, true);
@@ -112,7 +114,16 @@
                 if($previousDate != $currentDate){
                     $out["date"] = $previousDate;
                     $out["totalNum"] = $totalNum;
-                    array_push($list, $out);									
+                    array_push($list, $out);	
+					
+					if($maxYAxisValue == null){
+						$maxYAxisValue = $totalNum;
+					} else {
+						if($maxYAxisValue < $totalNum){
+							$maxYAxisValue = $totalNum;
+						}
+					}
+													
 					if($previousDate < $smallestDate){
 						$smallestDate = $previousDate;	
 					}
@@ -131,6 +142,11 @@
 			if($largestDate == null){
 				$largestDate = $previousDate;	
 			} else {
+				
+				if($maxYAxisValue < $totalNum){
+					$maxYAxisValue = $totalNum;
+				}
+						
 				if($previousDate > $largestDate){
 					$largestDate = $previousDate;	
 				}
@@ -155,9 +171,11 @@
     ?>
 
 <link rel="stylesheet" type="text/css" media="screen" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.9.3/css/bootstrap-select.min.css">
+<link href="./assets/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 	
 <script src="https://d3js.org/d3.v4.min.js"></script></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.9.3/js/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="./assets/js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
 <script src="assets/js/app03.js" type="text/javascript"></script>
 
 <style>
@@ -196,6 +214,11 @@
 				<?php if(($_SESSION['git_total_contributors']) > 2 ) { ?>
 					<select class="selectpicker col-centered col-fixed" data-live-search="true" data-style="btn-danger" id = "search3" name="search3"></select>
 					<?php }?>
+					<div class="input-group date form_date" data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+        <input class="form-control" size="16" type="text" id="startDate" name="startDate">
+        <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+        </div>
 					<input class="btn btn-primary" id="submit" name="submit" value="Submit" type="submit">
 				</div>
 			</form>
@@ -207,19 +230,42 @@
 	</div>
 
 <script type="text/javascript">
+	$('.form_date').datetimepicker({
+       language:  'en',
+       weekStart: 1,
+       todayBtn:  1,
+       autoclose: 1,
+       todayHighlight: 1,
+       startView: 2,
+       minView: 2,
+       forceParse: 0
+    });
+	
+	var currDate = '<?php echo $_SESSION['git_start_date']?>';
+	if(currDate){
+		document.getElementById("startDate").value = currDate;
+	}
+	
+
 	var obj01 = '<?php echo $listContributors ?>';
-	var contributors = JSON.parse(obj01);
 	
-	var timedate = <?php echo $timedata ?>;
+	if (obj01){
+		var contributors = JSON.parse(obj01);
 	
-	var minDate = "<?php echo $smallestDate ?>";
-	var maxDate = "<?php echo $largestDate ?>";
+		var timedate = <?php echo $timedata ?>;
+		
+		var minDate = "<?php echo $smallestDate ?>";
+		var maxDate = "<?php echo $largestDate ?>";
+		var maxYValue = "<?php echo $maxYAxisValue; ?>";
+		
+		var user01 = '<?php echo $_SESSION['user01'] ?>';
+		var user02 = '<?php echo $_SESSION['user02'] ?>';
+		var user03 = '<?php echo $_SESSION['user03'] ?>';
+		
+		drawCompareGraph(contributors, timedate, minDate, maxDate, maxYValue, user01, user02, user03);
+		
+	}
 	
-	var user01 = '<?php echo $_SESSION['user01'] ?>';
-	var user02 = '<?php echo $_SESSION['user02'] ?>';
-	var user03 = '<?php echo $_SESSION['user03'] ?>';
-	
-	drawCompareGraph(contributors, timedate, minDate, maxDate, user01, user02, user03)
 	
 </script>
 
