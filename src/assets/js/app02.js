@@ -7,7 +7,7 @@ function drawLineGraph(data){
     
     // Parse the date / time
     var parseDate = d3.timeParse("%Y-%m-%d");
-    var formatTime = d3.timeFormat("%e %b");
+    var formatTime = d3.timeFormat("%m-%");
 	var bisectDate = d3.bisector(function(d) { return d.date; }).left;
     
     // Set the ranges
@@ -51,6 +51,17 @@ function drawLineGraph(data){
     svg.append("path")
     .attr("class", "line")
     .attr("d", valueline(data));
+	
+    // Add the X Axis
+    svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(xAxis);
+    
+    // Add the Y Axis
+    svg.append("g")
+    .attr("class", "y axis")
+    .call(yAxis);
  
 	 var focus = svg.append("g")
       .attr("class", "focus")
@@ -75,22 +86,15 @@ function drawLineGraph(data){
 		var x0 = x.invert(d3.mouse(this)[0]),
 			i = bisectDate(data, x0, 1),
 			d0 = data[i - 1],
-			d1 = data[i],
+			d1 = data[i];
+			console.log(d0.date);
+			console.log(d1.date);
 			d = x0 - d0.date > d1.date - x0 ? d1 : d0;
 		focus.attr("transform", "translate(" + x(d.date) + "," + y(d.totalNum) + ")");
 		//focus.select("text").text(formatTime(d.date) + " : " + d.totalNum);}
-    	focus.select("text").text(d.totalNum);}
+		focus.select("text").text(d.totalNum);
+	}
 	
-    // Add the X Axis
-    svg.append("g")
-    .attr("class", "x axis")
-    .attr("transform", "translate(0," + height + ")")
-    .call(xAxis);
-    
-    // Add the Y Axis
-    svg.append("g")
-    .attr("class", "y axis")
-    .call(yAxis);
 
 }
 

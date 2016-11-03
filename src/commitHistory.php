@@ -14,6 +14,7 @@
             $result = execute('getcommithistory', null, null, $_SESSION['git_username'], null, null,'','');
         }
         $finalResult = generateTotalInsAndDelByDate($result);
+		$title = $_SESSION['git_username'];
         $result = json_encode($result);
     }
     
@@ -26,6 +27,7 @@
 			$_SESSION['git_start_date'] = $startDate;
 			$result = execute('getcommithistory',null,null,$_SESSION['git_username'],$startDate,null,'','');
 			$finalResult = generateTotalInsAndDelByDate($result);
+			$title = $_SESSION['git_username']." From ".$startDate;
 			$result = json_encode($result);
 		}
     }
@@ -151,7 +153,7 @@
 
 
 <div class="row">
-    <h3><?php echo $_SESSION['git_username']; ?></h3>
+    <h3><?php echo $title ?></h3>
     <div class="col-sm-12">
         <div id="chart"></div>
     </div>
@@ -186,6 +188,11 @@
        minView: 2,
        forceParse: 0
     });
+	
+	var currDate = '<?php echo $_SESSION['git_start_date']?>';
+	if(currDate){
+		document.getElementById("startDate").value = currDate;
+	}
 
     jsonData = '<?php echo $finalResult ?>';
     var tableData = '<?php echo $result ?>';
