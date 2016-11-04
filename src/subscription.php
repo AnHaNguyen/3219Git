@@ -9,13 +9,14 @@ include_once('./php/controller.php');
 if (isset($_POST["submit"])) {
         if(!empty($_POST['emails']) && isset($_SESSION['loginuser']) && !empty($_SESSION['loginuser'])) {
             foreach($_POST['emails'] as $check) {
-				if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-  					$message = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Invalid email format</div>'; 
-				} else {
-					$response = execute('addemail',null,$check,$_SESSION['loginuser'],null,null,'','');
+				if (!filter_var($check, FILTER_VALIDATE_EMAIL)  === false) {
+  					$response = execute('addemail',null,$check,$_SESSION['loginuser'],null,null,'','');
 					if(strcmp($response,"sucess")){
 						$message = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Successfully subscribed!</div>';
 					}
+				} else {
+					echo $check;
+					$message = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Invalid email format</div>'; 
 				}
             }
         }
