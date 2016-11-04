@@ -87,8 +87,6 @@ function drawLineGraph(data){
 			i = bisectDate(data, x0, 1),
 			d0 = data[i - 1],
 			d1 = data[i];
-			console.log(d0.date);
-			console.log(d1.date);
 			d = x0 - d0.date > d1.date - x0 ? d1 : d0;
 		focus.attr("transform", "translate(" + x(d.date) + "," + y(d.totalNum) + ")");
 		//focus.select("text").text(formatTime(d.date) + " : " + d.totalNum);}
@@ -122,4 +120,15 @@ function drawTable(tableData, githubLink){
         
         document.getElementById("tablebody").appendChild(row);
     }
+}
+
+function loadSelectValue(contributors){
+	for (i = 0; i < contributors.length; i++) { 
+		var counter = contributors[i];
+		var search1 = document.getElementById("search1");
+		var option1 = document.createElement("option");
+		option1.text = counter.Name;
+		option1.value = counter.Name;
+		search1.add(option1);
+	}
 }
