@@ -33,6 +33,12 @@ function drawCompareGraph(contributors, timedate, minDate, maxDate, maxYValue, u
 		var mindate = parseTime(minDate);
 		var maxdate = parseTime(maxDate);
 		
+		if(minDate === maxDate){
+			var x = d3.scaleTime().domain([0,maxdate]).range([0, width]);
+		} else {
+			var x = d3.scaleTime().domain([mindate,maxdate]).range([0, width]);
+		}
+		
 		var x = d3.scaleTime().domain([mindate,maxdate]).range([0, width]);
 		var y = d3.scaleLinear().domain([0,maxYValue]).range([height, 0]);
 		
@@ -54,14 +60,18 @@ function drawCompareGraph(contributors, timedate, minDate, maxDate, maxYValue, u
 		name = user02;
 		document.getElementById("search2").value = name;
 		toDraw = timedate[name];
-		drawLine(toDraw,"green","#second",1);
-		ids[1] = "#second";
+		if(toDraw){
+			drawLine(toDraw,"green","#second",1);
+			ids[1] = "#second";
+		}
 
 		name = user03;
 		document.getElementById("search3").value = name;
 		toDraw = timedate[name];
-		drawLine(toDraw,"red","#third",2);
-		ids[2] = "#third";
+		if(toDraw){
+			drawLine(toDraw,"red","#third",2);
+			ids[2] = "#third";
+		}
 
 	});
 

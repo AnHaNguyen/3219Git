@@ -32,11 +32,6 @@ function drawLineGraph(data){
     .x(function(d) { return x(d.date); })
     .y(function(d) { return y(d.totalNum); });
     
-    // Define the div for the tooltip
-    var div = d3.select("body").append("div")
-    .attr("class", "tooltip")
-    .style("opacity", 0);
-    
     // Adds the svg canvas
     var svg = d3.select("div#chart")
     .append("svg")
@@ -71,6 +66,7 @@ function drawLineGraph(data){
     .attr("class", "y axis")
     .call(yAxis);
  
+ 	// Define the div for the tooltip
 	 var focus = svg.append("g")
       .attr("class", "focus")
       .style("display", "none");
