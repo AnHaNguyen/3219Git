@@ -14,6 +14,7 @@
     if (isset($_POST["submit"])) {
         //https://github.com/jiaminw12/cs2102_stuffSharing
         //https://github.com/nhaarman/ListViewAnimations
+		//https://github.com/JamesNK/Newtonsoft.Json
 
 		if(empty($_POST['basic-url'])){
 			$message = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Please insert a Git URL!</div>'; 
@@ -91,6 +92,7 @@ svg{
 
 
 <div class="row">
+	<h3><?php echo $_SESSION['git_url'] ?></h3>
     <div class="col-sm-12">
         <div id="chart"></div>
     </div>
@@ -117,12 +119,14 @@ svg{
 
 <script type="text/javascript">
     var jsonData = '<?php echo $result ?>';
-    var data = JSON.parse(jsonData);
-    buildTable(data);
-    $(document).ready(function() {
-                      $('#sortable').DataTable();
-    });
-    draw01();
+	if(jsonData){
+		var data = JSON.parse(jsonData);
+		buildTable(data);
+		$(document).ready(function() {
+			$('#sortable').DataTable();
+		});
+		draw01();
+	}
 </script>
 
 </div> <!-- /container -->
