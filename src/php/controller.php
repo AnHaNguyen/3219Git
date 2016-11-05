@@ -42,6 +42,9 @@
 				$list = getHistoryFile($file, [$s,$e]);
 				return($list);
 				break;
+			case 'getlines':
+				return getLines();
+				break;
 			default:
 				exit("Unregconized command");
 				break;
