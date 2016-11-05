@@ -1,39 +1,16 @@
 <?php
     session_start();
-    $current_page = 'Home';
-    ini_set('max_execution_time', 300);
+    $current_page = 'Num of Lines';
+  
     include_once('./template/header.php');
     include_once('./template/navbar.php');
     include_once('./php/controller.php');
     
     if(isset($_SESSION['git_url']) && !empty($_SESSION['git_url']) && isset($_SESSION['git_username']) && !empty($_SESSION['git_username'])) {
-        $result = execute('getcontributors', null, null, null, null, null,'','');
+        $result = execute('getlines', null, null, null, null, null,'','');
         $result = json_encode($result);
     }
     
-    if (isset($_POST["submit"])) {
-        //https://github.com/jiaminw12/cs2102_stuffSharing
-        //https://github.com/nhaarman/ListViewAnimations
-		//https://github.com/JamesNK/Newtonsoft.Json
-
-		if(empty($_POST['basic-url'])){
-			$message = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Please insert a Git URL!</div>'; 
-		} else {
-			$userLink = $_POST['basic-url'];
-			$response = execute($command='addrepo',$userLink);
-			if (strcmp($response,"sucess")){
-				$res = explode('/', parse_url($userLink, PHP_URL_PATH));
-				$username = $res[1];
-				$_SESSION['git_username'] = $username;
-				$result = execute('getcontributors',null,null,null,null,null,'','');
-				
-				$_SESSION['git_contributors'] = getContributorsList($result);
-				
-				$result = json_encode($result);
-			}
-		}
-    }
-	
 	function getContributorsList($result){
 		$total = 0;
 		$result = json_encode($result);
@@ -56,7 +33,7 @@
 <script src="./assets/js/d3pie.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
-<script src="./assets/js/app.js" type="text/javascript"></script>
+<script src="./assets/js/app05.js" type="text/javascript"></script>
 
 <style>
 svg{
@@ -72,25 +49,6 @@ svg{
 
 <div class="container">
 
- <!-- Main component for a primary marketing message or call to action -->
-	<div id="response">
-		<?php echo $message;?>
-	</div>
-
-<!-- Main component for a primary marketing message or call to action -->
-<div class="jumbotron">
-    <h2>Visualize your GitHub Repos</h2>
-    <p>
-    <label>Your Github Repo URL</label>
-    <form method="post" class="form" role="form" action="index.php">
-        <input type="text" class="form-control" id="basic-url" name="basic-url" aria-describedby="basic-addon3">
-        <p></p>
-        <input class="btn btn-primary" id="submit" name="submit" value="Submit" type="submit">
-    </form>
-    </p>
-</div>
-
-
 <div class="row">
 	<h3><?php echo $_SESSION['git_url'] ?></h3>
     <div class="col-sm-12">
@@ -105,10 +63,7 @@ svg{
                 <thead>
                     <tr>
                         <th class="col-md-1">Author</th>
-                        <th class="col-md-2">Commits</th>
-                        <th class="col-md-3">Insertions</th>
-                        <th class="col-md-3">Deletions</th>
-                        <th class="col-md-3">% of changes</th>
+                        <th class="col-md-2">Line Numbers</th>
                     </tr>
                 </thead>
                 <tbody id="tablebody01"></tbody>
@@ -119,12 +74,13 @@ svg{
 
 <script type="text/javascript">
     var jsonData = '<?php echo $result ?>';
+	console.log(jsonData);
 	if(jsonData){
 		var data = JSON.parse(jsonData);
 		buildTable(data);
 		$(document).ready(function() {
 			$('#sortable').DataTable({
-				"order": [[ 4, "desc" ]]
+				"order": [[ 1, "desc" ]]
 			});
 		});
 		drawGraph();
