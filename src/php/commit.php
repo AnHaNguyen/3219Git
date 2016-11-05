@@ -4,6 +4,8 @@
 		var $author;
 		var $date;
 		var $lines = array();
+		var $totalIns;
+		var $totalDel;
 
 		function __construct($hash, $author, $date) {
 			$this->hash = $hash;
@@ -30,6 +32,19 @@
 
 		function getLines() {
 			return $this->lines;
+		}
+
+		function setTotal($totalIns, $totalDel) {
+			$this->totalIns = $totalIns;
+			$this->totalDel = $totalDel;
+		}
+
+		function getTotalIns() {
+			return $this->totalIns;
+		}
+		
+		function getTotalDel() {
+			return $this->totalDel;
 		}
 	}
 ?>
