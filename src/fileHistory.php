@@ -7,17 +7,7 @@
     include_once('./php/controller.php');
 	
 	$repoName = $_SESSION['repo_name'];
-    
-    /*if(isset($_SESSION['git_url']) && !empty($_SESSION['git_url'])) {
-        
-        if(isset($_SESSION['git_start_date']) && !empty($_SESSION['git_start_date'])) {
-            $result = execute('getcommithistory', null, null, $_SESSION['git_username'], $_SESSION['git_start_date'], null,'','');
-        } else {
-            $result = execute('getcommithistory', null, null, $_SESSION['git_username'], null, null,'','');
-        }
-        $result = json_encode($result);
-    }*/
-    
+
     if (isset($_POST["submit"])) {
         //https://github.com/jiaminw12/cs2102_stuffSharing
         //https://github.com/scrapy/scrapy <- cannot clone
@@ -34,13 +24,19 @@
 			$endLine = $_POST['basic-end-line'];
 			
 			if($startLine != '' && $endLine != ''){
-				$result = execute('getfilehistory',null,null,null,null,$filename,$startLine,$endLine);
+				if($startLine > $endLine){
+					$message = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Start line must smaller than end line.</div>';
+				} else {
+					$result = execute('getfilehistory',null,null,null,null,$filename,$startLine,$endLine);
+				}
 			} else {
 				$result = execute('getfilehistory',null,null,null,null,$filename,'','');
 			}
-				$result = json_encode($result);
-			}
-   		}
+			$lines = file($filename, FILE_IGNORE_NEW_LINES);
+			
+			$result = json_encode($result);
+		}
+   	}
 	
     ?>
 
@@ -95,9 +91,11 @@
     <form method="post" class="form" role="form" action="fileHistory.php">
         <input type="text" class="form-control" id="basic-filename" name="basic-filename" aria-describedby="basic-addon3">
         <p></p>
-        <input type="text" class="form-control" id="basic-start-line" name="basic-start-line" aria-describedby="basic-addon3">
-        <p></p>
-        <input type="text" class="form-control" id="basic-end-line" name="basic-end-line" aria-describedby="basic-addon3">
+		<div class="input-group">
+			<input type="text" class="form-control" id="basic-start-line" name="basic-start-line" aria-describedby="basic-addon3" placeholder="start">
+			<span class="input-group-addon">-</span>
+			<input type="text" class="form-control" id="basic-end-line" name="basic-end-line" aria-describedby="basic-addon3" placeholder="end">
+		</div>
         <p></p>
         <input class="btn btn-primary" id="submit" name="submit" value="Submit" type="submit">
     </form>

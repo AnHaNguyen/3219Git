@@ -209,16 +209,20 @@
 		<div class="col-xs-12">
 			<form method="post" class="form" role="form" action="commitHistoryDiff.php">
 				<div class="row row-centered">
-					<select class="selectpicker col-centered col-fixed" data-live-search="true" data-style="btn-primary" id = "search1" name="search1"></select>
+					<select class="selectpicker col-centered col-fixed" data-live-search="true" data-style="btn-primary" id = "search1" name="search1" ></select>
 					<select class="selectpicker col-centered col-fixed" data-live-search="true" data-style="btn-success" id = "search2" name="search2"></select>
 				<?php if(($_SESSION['git_total_contributors']) > 2 ) { ?>
 					<select class="selectpicker col-centered col-fixed" data-live-search="true" data-style="btn-danger" id = "search3" name="search3"></select>
 					<?php }?>
-					<div class="input-group date form_date" data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
-        <input class="form-control" size="16" type="text" id="startDate" name="startDate">
-        <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-        </div>
+					
+					<div class='col-md-5 col-centered'>
+						<div class="input-group date form_date" data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+				<input class="form-control" size="16" type="text" id="startDate" name="startDate">
+				<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+				<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+						</div>
+					</div>
+					
 					<input class="btn btn-primary" id="submit" name="submit" value="Submit" type="submit">
 				</div>
 			</form>
@@ -230,6 +234,7 @@
 	</div>
 
 <script type="text/javascript">
+	
 	$('.form_date').datetimepicker({
        language:  'en',
        weekStart: 1,
@@ -241,30 +246,43 @@
        forceParse: 0
     });
 
-	var obj01 = '<?php echo $listContributors ?>';
-	
-	if (obj01){
-		var contributors = JSON.parse(obj01);
-	
-		var timedate = <?php echo $timedata ?>;
-		
-		var minDate = "<?php echo $smallestDate ?>";
-		var maxDate = "<?php echo $largestDate ?>";
-		var maxYValue = "<?php echo $maxYAxisValue; ?>";
-		
-		var user01 = '<?php echo $_SESSION['user01'] ?>';
-		var user02 = '<?php echo $_SESSION['user02'] ?>';
-		var user03 = '<?php echo $_SESSION['user03'] ?>';
-		
-		drawCompareGraph(contributors, timedate, minDate, maxDate, maxYValue, user01, user02, user03);
-		
-	}
-	
 	var currDate = '<?php echo $_SESSION['git_start_date_diff']?>';
 	if(currDate){
 		document.getElementById("startDate").value = currDate;
 	}
 	
+	var obj01 = '<?php echo $listContributors ?>';
+	
+	if (obj01){
+		var contributors = JSON.parse(obj01);
+		
+		loadSelectValue(contributors);
+		
+		var user01 = '<?php echo $_SESSION['user01'] ?>';
+		var user02 = '<?php echo $_SESSION['user02'] ?>';
+		var user03 = '<?php echo $_SESSION['user03'] ?>';
+		
+		if (user02 || user03){
+			document.getElementById("search2").selectedIndex = randomNumberFromRange(document.getElementById("search2").value.length);	
+			name = 	document.getElementById("search2").value;
+			document.getElementById("search3").selectedIndex = randomNumberFromRange(document.getElementById("search3").value.length);
+			name = 	document.getElementById("search3").value;
+		}
+	
+		var timedate = <?php echo $timedata ?>;
+		
+		var minDate = "<?php echo $smallestDate ?>";
+		if(currDate){
+			minDate = currDate;
+		}
+		
+		var maxDate = "<?php echo $largestDate ?>";
+		var maxYValue = "<?php echo $maxYAxisValue; ?>";
+		
+		drawCompareGraph(contributors, timedate, minDate, maxDate, maxYValue, user01, user02, user03);
+		
+	}
+
 	
 </script>
 
