@@ -1,3 +1,12 @@
+var formatMillisecond = d3.timeFormat(".%L"),
+		formatSecond = d3.timeFormat(":%S"),
+		formatMinute = d3.timeFormat("%I:%M"),
+		formatHour = d3.timeFormat("%I %p"),
+		formatDay = d3.timeFormat("%a %d"),
+		formatWeek = d3.timeFormat("%b %d"),
+		formatMonth = d3.timeFormat("%b"),
+		formatYear = d3.timeFormat("%Y");
+
 function drawLineGraph(data){
     
     // Set the dimensions of the canvas / graph
@@ -7,7 +16,7 @@ function drawLineGraph(data){
     
     // Parse the date / time
     var parseDate = d3.timeParse("%Y-%m-%d");
-    var formatTime = d3.timeFormat("%m-%");
+    var formatTime = d3.timeFormat("%b %d");
 	var bisectDate = d3.bisector(function(d) { return d.date; }).left;
     
     // Set the ranges
@@ -15,8 +24,7 @@ function drawLineGraph(data){
     var y = d3.scaleLinear().range([height, 0]);
     
     // Define the axes
-    var xAxis = d3.axisBottom().scale(x).ticks(5);
-    
+    var xAxis = d3.axisBottom().scale(x).ticks(5).tickFormat(multiFormat);
     var yAxis = d3.axisLeft().scale(y).ticks(5);
     
     // Define the line
@@ -95,6 +103,16 @@ function drawLineGraph(data){
 	
 
 }
+
+function multiFormat(date) {
+	  return (d3.timeSecond(date) < date ? formatMillisecond
+		  : d3.timeMinute(date) < date ? formatSecond
+		  : d3.timeHour(date) < date ? formatMinute
+		  : d3.timeDay(date) < date ? formatHour
+		  : d3.timeMonth(date) < date ? (d3.timeWeek(date) < date ? formatDay : formatWeek)
+		  : d3.timeYear(date) < date ? formatMonth 
+		  : formatYear)(date);
+	}
 
 function drawTable(tableData, githubLink){
     for (var i = 0; i < tableData.length; i++) {

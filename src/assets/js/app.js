@@ -84,7 +84,6 @@ function draw01(){
                         padding: 20
                 }
                         
-            }
-            
+            }      
    });
 }
