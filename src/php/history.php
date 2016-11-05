@@ -3,7 +3,7 @@
 	require_once("commit.php");
 
 	// chdir('../../repos/scrapy/');
-	// $list = getHistoryFile('requirements.txt');
+	// $list = getHistoryFile('requirements.txt', array(1,5));
 	// echo(json_encode($list));
 
 	function getHistoryUser($name, $date=null) {	//$date in ISO form: YYYY-MM-DD
@@ -109,18 +109,61 @@
 					}
 					$commit = new Commit($hash, $authorName, $date);
 					$commit->setTotal($a, $d);
-					// echo($line."<br>");
-					// echo($a." ".$d."<br>");
 					array_push($list, $commit);
 					$hash = '';
 				}
 			}
-					
-			// //echo(json_encode($list));
 			return $list;
 		}
 		else {
-
+			$command = "git log --reverse --date=short --abbrev-commit -L ".$range[0].",".$range[1].":\"".$file."\"";
+			$out = array();
+			$list = array();
+			exec($command, $out);
+			$hash = '';
+			$authorName = '';
+			$date = '';
+			$a = 0;
+			$d = 0;
+			$flag = 0;
+			foreach ($out as $line) {
+				$line = trim_all($line);
+				$tokens = explode(" ", $line);
+				if (strcmp($tokens[0],"commit") === 0) {
+					if ($flag === 1) {
+						$commit = new Commit($hash, $authorName, $date);
+						$commit->setTotal($a,$d);
+						array_push($list, $commit);
+					}
+					$flag = 0;
+					$a = 0;
+					$d = 0;
+					$hash = $tokens[1];
+				} else if (strcmp($tokens[0], "Author:") === 0) {
+					$authorName = $tokens[1];
+					for ($i = 2; $i < sizeof($tokens) -1; $i++) {
+						$authorName .= ' '.$tokens[$i];
+					}
+				} else if (strcmp($tokens[0], "Date:") === 0) {
+					$date = $tokens[1];
+				} else if (strcmp($tokens[0], "@@") === 0) {
+					$flag = 1;
+				} else if (strcmp(substr($tokens[0], 0, 1), "+") === 0) {
+					if ($flag === 1) {
+						$a++;
+					}
+				} else if (strcmp(substr($tokens[0], 0, 1), "-") === 0) {
+					if ($flag === 1) {
+						$d++;
+					}
+				}
+			}
+			if (strcmp($hash, '') !== 0) {
+				$commit = new Commit($hash, $authorName, $date);
+				$commit->setTotal($a,$d);
+				array_push($list, $commit);
+			}
+			return $list;
 		}
 	}
 ?>
