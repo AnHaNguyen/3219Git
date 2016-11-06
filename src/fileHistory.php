@@ -20,10 +20,7 @@
 	}	
 
     if (isset($_POST["submit"])) {
-        //https://github.com/jiaminw12/cs2102_stuffSharing
-        //https://github.com/scrapy/scrapy <- cannot clone
-        //102 - https://github.com/leereilly/games
-        
+		
 		if(empty($_POST['basic-filename'])){
 			$message = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Please insert a filename!</div>'; 
 		} else {

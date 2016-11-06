@@ -15,6 +15,8 @@
         //https://github.com/jiaminw12/cs2102_stuffSharing
         //https://github.com/nhaarman/ListViewAnimations
 		//https://github.com/JamesNK/Newtonsoft.Json
+        //https://github.com/scrapy/scrapy
+        //102 - https://github.com/leereilly/games
 
 		if(empty($_POST['basic-url'])){
 			$message = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Please insert a Git URL!</div>'; 
@@ -28,7 +30,7 @@
 				$result = execute('getcontributors',null,null,null,null,null,'','');
 				
 				$_SESSION['git_contributors'] = getContributorsList($result);
-				
+				resetAllSession();
 				$result = json_encode($result);
 			}
 		}
@@ -47,6 +49,24 @@
 		}
 		$_SESSION['git_total_contributors'] = $total;
 		return json_encode($list);
+	}
+	
+	function resetAllSession(){
+		//1b
+		unset($_SESSION['git_start_date']);
+		
+		//1c
+		unset($_SESSION['current_contributors']);
+		unset($_SESSION['git_start_date_diff']);
+		unset($_SESSION['user01']);
+		unset($_SESSION['user02']);
+		unset($_SESSION['user03']);
+		
+		//1d
+		unset($_SESSION['git_filename']);	
+		unset($_SESSION['git_startLine']);
+		unset($_SESSION['git_endLine']);
+		
 	}
  
     ?>

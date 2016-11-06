@@ -6,56 +6,44 @@
     include_once('./template/navbar.php');
     include_once('./php/controller.php');
 	
+	$_SESSION['git_start_date_diff'] = $_SESSION['git_start_date'];
+	$listContributors = $_SESSION['git_contributors'];
+	
     if(isset($_SESSION['git_url']) && !empty($_SESSION['git_url']) && isset($_SESSION['git_username']) && !empty($_SESSION['git_username'])) {
 		
 		// check whether the cuurent and previous is the same contributors list
 		if (isset($_SESSION['current_contributors']) && !empty($_SESSION['current_contributors'])){
-			$listContributors = $_SESSION['git_contributors'];
-			$jsonData1 = $_SESSION['current_contributors'];
-			$jsonData2 = $listContributors;
-			if($jsonData1 === $jsonData2){
-				if(isset($_SESSION['user01']) && !empty($_SESSION['user01']) && isset($_SESSION['user02']) && !empty($_SESSION['user02'])){
-					$result1 = execute('getcommithistory',null,null,$_SESSION['user01'],$_SESSION['git_start_date_diff'],null,'','');
-					$finalResult = generateTotalInsAndDelByDate($_SESSION['user01'], $result1);
-					$result2 = execute('getcommithistory',null,null,$_SESSION['user02'],$_SESSION['git_start_date_diff'],null,'','');
-					$finalResult2 = generateTotalInsAndDelByDate($_SESSION['user02'], $result2);
-				
-					if(isset($_SESSION['user03']) && !empty($_SESSION['user03'])){
-						$result3 = execute('getcommithistory',null,null,$_SESSION['user03'],$_SESSION['git_start_date_diff'],null,'','');
-						$finalResult3 = generateTotalInsAndDelByDate($_SESSION['user03'], $result3);
-						$timedata = array($_SESSION['user01'] => $finalResult, $_SESSION['user02']=> $finalResult2, $_SESSION['user03'] => $finalResult3);
-					} else {
-						$timedata = array($_SESSION['user01'] => $finalResult, $_SESSION['user02']=> $finalResult2);
-					}
-				} else {
-					$result = execute('getcommithistory', null, null, $_SESSION['git_username'], $_SESSION['git_start_date_diff'], null,'','');
-					$_SESSION['user01'] = $_SESSION['git_username'];
-					$finalResult = generateTotalInsAndDelByDate($_SESSION['git_username'], $result);
-					$timedata = array($_SESSION['git_username'] => $finalResult);
-				}
-			} else {
-				$timedata = isNewList();
-			}
+			$timedata = isNewList($_SESSION['user01'], $_SESSION['user02'], $_SESSION['user03'], $_SESSION['git_start_date_diff']);
 		} else {
-			$listContributors = $_SESSION['git_contributors'];
-			$timedata = isNewList();
+			$_SESSION['user01'] = $_SESSION['git_username'];
+			$templateList = json_decode($listContributors, true);
+			$_SESSION['user02'] = $templateList[1]['Name'];
+			if(($_SESSION['git_total_contributors']) > 2 ){
+				$_SESSION['user03'] = $templateList[2]['Name'];
+			}
+			$timedata = isNewList($_SESSION['user01'], $_SESSION['user02'],$_SESSION['user03'], $_SESSION['git_start_date_diff']);
 		}
-		$timedata = json_encode($timedata);
     }
 	
-	function isNewList(){
-		unset($_SESSION['user01']);
-		unset($_SESSION['user02']);
-		unset($_SESSION['user03']);
-		if(isset($_SESSION['git_start_date_diff']) && !empty($_SESSION['git_start_date_diff'])) {
-			$result = execute('getcommithistory', null, null, $_SESSION['git_username'], $_SESSION['git_start_date_diff'], null,'','');
-		} else {
-			$result = execute('getcommithistory', null, null, $_SESSION['git_username'], null, null,'','');
-		}
-		$_SESSION['user01'] = $_SESSION['git_username'];
-		$finalResult = generateTotalInsAndDelByDate($_SESSION['git_username'], $result);
-		$timedata = array($_SESSION['git_username'] => $finalResult);
-		return $timedata;
+	function isNewList($user01, $user02, $user03, $date){
+		
+		if(!empty($user01) && !empty($user02)){
+			$result1 = execute('getcommithistory',null,null,$user01,$date,null,'','');
+			$finalResult = generateTotalInsAndDelByDate($user01, $result1);
+			
+			$result2 = execute('getcommithistory',null,null,$user02,$date,null,'','');
+			$finalResult2 = generateTotalInsAndDelByDate($user02, $result2);
+		
+			if(!empty($user03)){
+				$result3 = execute('getcommithistory',null,null,$user03,$date,null,'','');
+				$finalResult3 = generateTotalInsAndDelByDate($user03, $result3);
+				$timedata = array($user01 => $finalResult, $user02 => $finalResult2, $user03 => $finalResult3);
+			} else {
+				$timedata = array($user01 => $finalResult, $user02=> $finalResult2);
+			}
+		} 
+		
+		return json_encode($timedata);
 	}
 	
 	if (isset($_POST["submit"])) {
@@ -151,6 +139,10 @@
 					$largestDate = $previousDate;	
 				}
 			}
+		}
+		
+		if(empty($maxYAxisValue)){
+			$maxYAxisValue = $totalNum;
 		}
 		
         return $list;
@@ -260,16 +252,22 @@
 		
 		var user01 = '<?php echo $_SESSION['user01'] ?>';
 		var user02 = '<?php echo $_SESSION['user02'] ?>';
-		var user03 = '<?php echo $_SESSION['user03'] ?>';
-		
-		if (user02 || user03){
+		if (!user02){
 			document.getElementById("search2").selectedIndex = randomNumberFromRange(document.getElementById("search2").value.length);	
-			name = 	document.getElementById("search2").value;
-			document.getElementById("search3").selectedIndex = randomNumberFromRange(document.getElementById("search3").value.length);
-			name = 	document.getElementById("search3").value;
+			user02 = document.getElementById("search2").value;
 		}
+		
+		<?php if(($_SESSION['git_total_contributors']) > 2 ) {?>
+			var user03 = '<?php echo $_SESSION['user03'] ?>';
+			if(!user03){
+				document.getElementById("search3").selectedIndex = randomNumberFromRange(document.getElementById("search3").value.length);
+				user03 = 	document.getElementById("search3").value;	
+			}
+		<?php }  else {?>
+			user03 = null;
+		<?php }?>
 	
-		var timedate = <?php echo $timedata ?>;
+		var timedate = <?php echo $timedata?>;
 		
 		var minDate = "<?php echo $smallestDate ?>";
 		if(currDate){

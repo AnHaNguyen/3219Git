@@ -52,23 +52,25 @@ function drawCompareGraph(contributors, timedate, minDate, maxDate, maxYValue, u
 		  .call(d3.axisLeft(y));
 		  
 		var name = user01;
-		document.getElementById("search1").value = name;
-		var toDraw = timedate[name];
-		drawLine(toDraw,"blue","#first",0);
-		ids[0] = "#first";
+		if(name){
+			document.getElementById("search1").value = name;
+			var toDraw = timedate[name];
+			drawLine(toDraw,"blue","#first",0);
+			ids[0] = "#first";
+		}
 		
 		name = user02;
-		document.getElementById("search2").value = name;
-		toDraw = timedate[name];
-		if(toDraw){
+		if(name){
+			document.getElementById("search2").value = name;
+			toDraw = timedate[name];
 			drawLine(toDraw,"green","#second",1);
 			ids[1] = "#second";
 		}
 
 		name = user03;
-		document.getElementById("search3").value = name;
-		toDraw = timedate[name];
-		if(toDraw){
+		if(name){
+			document.getElementById("search3").value = name;
+			toDraw = timedate[name];
 			drawLine(toDraw,"red","#third",2);
 			ids[2] = "#third";
 		}
