@@ -42,7 +42,7 @@ function drawCompareGraph(contributors, timedate, minDate, maxDate, maxYValue, u
 		var x = d3.scaleTime().domain([mindate,maxdate]).range([0, width]);
 		var y = d3.scaleLinear().domain([0,maxYValue]).range([height, 0]);
 		
-		var xAxis = d3.axisBottom(x).ticks(5).tickFormat(multiFormat);
+		var xAxis = d3.axisBottom(x).tickFormat(multiFormat);
 	
 		svg.append("g")
 		  .attr("transform", "translate(0," + height + ")")
