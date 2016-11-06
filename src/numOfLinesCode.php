@@ -10,21 +10,6 @@
         $result = execute('getlines', null, null, null, null, null,'','');
         $result = json_encode($result);
     }
-    
-	function getContributorsList($result){
-		$total = 0;
-		$result = json_encode($result);
-        $jsondata = json_decode($result, true);
-		$out = array();
-        $list = array();
-		foreach ($jsondata as $re){
-			$out["Name"] = $re["name"];
-			array_push($list, $out);
-			$total += 1;
-		}
-		$_SESSION['git_total_contributors'] = $total;
-		return json_encode($list);
-	}
  
     ?>
 
