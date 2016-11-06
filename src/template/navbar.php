@@ -26,6 +26,7 @@
                 <li class="<?php echo isActive('Commit History'); ?>"><a href="commitHistory.php">1b</a></li>
 				<li class="<?php echo isActive('Commit History Diff'); ?>"><a href="commitHistoryDiff.php">1c</a></li>
                 <li class="<?php echo isActive('File History'); ?>"><a href="fileHistory.php">1d</a></li>
+				<li class="<?php echo isActive('Num of Lines'); ?>"><a href="numOfLinesCode.php">1e</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
 				<?php
