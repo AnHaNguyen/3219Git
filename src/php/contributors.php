@@ -51,7 +51,7 @@
 		exec($command1, $out);
 		$list = array();
 		foreach($out as $file) {
-			$history = getHistoryFile(trim_all($file));
+			$history = getVersionFile(trim_all($file));
 			for ($i = 0; $i < sizeof($history); $i++) {
 				$e = $history[$i];	
 				$isFound = false;
