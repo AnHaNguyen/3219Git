@@ -54,7 +54,7 @@ def getExInfo(existingData):
     #subList = ["bihuutue@gmail.com"]
     return subList, lastSentList
 
-def sendEmail(sender, password, updatedData, subList, lastSentList):
+def sendEmail(sender, password, updatedData, subList, lastSentList, threshold):
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.ehlo()
     server.starttls()
@@ -75,38 +75,37 @@ def sendEmail(sender, password, updatedData, subList, lastSentList):
         notification = "This notification was sent at: " + str(time.strftime("%d-%b-%Y %H:%M")) + " SGT! \n"
         signature = "Best Regards, \n"+"THJJ Team"
 
+        lastLogin = datetime.datetime.strptime(mailRecord['lastSent'], "%d-%b-%Y %H:%M")
+        deltaLogin = time - lastLogin
+        sinceLastLogin = "It has been "+ str(deltaLogin.days)+ " days and "+ str(deltaLogin.seconds/3600) + " hours since you last logged in! \n"
         
+        #Check if this subscriber has received notification before
         if address in subList:
-            lastLogin = datetime.datetime.strptime(mailRecord['lastSent'], "%d-%b-%Y %H:%M")
-            print(time, lastLogin)
-            delta = time - lastLogin
-            print(delta.seconds/60)
-            sinceLastLogin = "It has been "+ str(delta.days)+ " days and "+ str(delta.seconds/3600) + " hours since you last logged in! \n"
-            
             lastSent = datetime.datetime.strptime(lastSentList[subList.index(address)], "%d-%b-%Y %H:%M")
-            delta = time - lastSent
-            sinceLastSent = "It has been "+ str(delta.days)+ " days and "+ str(delta.seconds/3600) + " hours since the last notification! \n \n"
-
+            deltaSent = time - lastSent
+            sinceLastSent = "It has been "+ str(deltaSent.days)+ " days and "+ str(deltaSent.seconds/3600) + " hours since the last notification! \n \n"
+        
         
         body = header + notification + sinceLastLogin + sinceLastSent + signature
         msg.attach(MIMEText(body, 'plain'))
-        #server.sendmail(sender, address, msg.as_string())
-        #print(username + msg.as_string())
-
-        newRecord =  {
-            'address' : address,
-            'lastSent' : time.strftime("%d-%b-%Y %H:%M")
-        }
-        data.append(newRecord)
+        
+        #Send emails according to threshold of days since last login
+        if deltaLogin.days >= threshold:
+            server.sendmail(sender, address, msg.as_string())
+            #print(username + msg.as_string())
+            newRecord =  {
+                'address' : address,
+                'lastSent' : time.strftime("%d-%b-%Y %H:%M")
+            }
+            data.append(newRecord)
     server.quit()
     return data
 
 def lambda_handler(event, context):
     #Set default values for sender:
-    sender = "besttemvn"
-    #The password should be input as a field of event or set as below
-    password = event['password']
-    #password = ""
+    sender = "besttemvn" #Email address of the sender
+    threshold = 0 #Send emails to subscribers who have not logged in for at least this many days
+    password = event['password']  #The password should be input as a field of event or set as below
     
     #Setup the bucket
     s3 = setupBucket()
@@ -125,7 +124,7 @@ def lambda_handler(event, context):
     subList, lastSentList = getExInfo(existingData)
     
     #Send the emails:
-    data = sendEmail(sender, password, updatedData, subList, lastSentList)
+    data = sendEmail(sender, password, updatedData, subList, lastSentList, threshold)
     print("Email sent!")
     
     #Update existing JSON data to S3
