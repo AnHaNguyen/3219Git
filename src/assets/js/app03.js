@@ -1,11 +1,4 @@
-function drawCompareGraph(contributors, timedate, minDate, maxDate, maxYValue, user01, user02, user03){
-	
-	var ids = ["nil","nil","nil"]; 
-	var valueLine, parseTime, svg;
-	var minDate = minDate;
-	var maxDate = maxDate;
-	
-	var formatMillisecond = d3.timeFormat(".%L"),
+var formatMillisecond = d3.timeFormat(".%L"),
 		formatSecond = d3.timeFormat(":%S"),
 		formatMinute = d3.timeFormat("%I:%M"),
 		formatHour = d3.timeFormat("%I %p"),
@@ -13,6 +6,13 @@ function drawCompareGraph(contributors, timedate, minDate, maxDate, maxYValue, u
 		formatWeek = d3.timeFormat("%b %d"),
 		formatMonth = d3.timeFormat("%b"),
 		formatYear = d3.timeFormat("%Y");
+		
+function drawCompareGraph(contributors, timedate, minDate, maxDate, maxYValue, user01, user02, user03){
+	
+	var ids = ["nil","nil","nil"]; 
+	var valueLine, parseTime, svg;
+	var minDate = minDate;
+	var maxDate = maxDate;
 	
 	$(document).ready(function() {	
 		var margin = {top: 20, right: 20, bottom: 100, left: 50},
@@ -96,9 +96,10 @@ function drawCompareGraph(contributors, timedate, minDate, maxDate, maxYValue, u
 	       	.attr("stroke-width", 2)
 	        .attr("fill", "none")
 	        .attr("id",id);
-	}	
-	
-	function multiFormat(date) {
+	}
+}
+
+function multiFormat(date) {
 	  return (d3.timeSecond(date) < date ? formatMillisecond
 		  : d3.timeMinute(date) < date ? formatSecond
 		  : d3.timeHour(date) < date ? formatMinute
@@ -107,7 +108,6 @@ function drawCompareGraph(contributors, timedate, minDate, maxDate, maxYValue, u
 		  : d3.timeYear(date) < date ? formatMonth 
 		  : formatYear)(date);
 	}
-}
 
 
 function loadSelectValue(contributors){

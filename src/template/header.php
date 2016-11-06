@@ -33,7 +33,7 @@ date_default_timezone_set("Asia/Singapore");
         <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
         <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
+		<script src="https://d3js.org/d3.v3.min.js"></script></script>
     </head>
 
     <body>

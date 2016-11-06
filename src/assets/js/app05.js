@@ -2,13 +2,7 @@ var overallInsertAndDeletions = 0;
 var nameTotalChanges = [];
 
 function buildTable(data){
-    
-    /*for (var i = 0; i < data.length; i++) {
-        var counter = data[i];
-        var insertNum = counter.lineNum;
-        overallInsertAndDeletions += insertNum + deleteNum;
-    }*/
-    
+
     for (var i = 0; i < data.length; i++) {
         var counter = data[i];
         var row = document.createElement("tr");
