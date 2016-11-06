@@ -7,6 +7,17 @@
     include_once('./php/controller.php');
 	
 	$repoName = $_SESSION['repo_name'];
+	
+	if(isset($_SESSION['git_filename']) && !empty($_SESSION['git_filename'])){
+		
+		 if(isset($_SESSION['git_startLine']) && !empty($_SESSION['git_startLine']) && isset($_SESSION['git_endLine']) && !empty($_SESSION['git_endLine'])){
+			 $result = execute('getfilehistory',null,null,null,null,$_SESSION['git_filename'],$_SESSION['git_startLine'],$_SESSION['git_endLine']);
+		} else {
+			$result = execute('getfilehistory',null,null,null,null,$_SESSION['git_filename'],'','');
+		}
+		$graphData = getNameTotal($result);
+		$result = json_encode($result);
+	}	
 
     if (isset($_POST["submit"])) {
         //https://github.com/jiaminw12/cs2102_stuffSharing
@@ -23,20 +34,64 @@
 			$startLine = $_POST['basic-start-line'];
 			$endLine = $_POST['basic-end-line'];
 			
-			if($startLine != '' && $endLine != ''){
+			if(!empty($startLine) && !empty($endLine)){
 				if($startLine > $endLine){
 					$message = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Start line must smaller than end line.</div>';
+					$result = execute('getfilehistory',null,null,null,null,$filename,'','');
 				} else {
+					$_SESSION['git_startLine'] = $startLine;
+					$_SESSION['git_endLine'] = $endLine;
 					$result = execute('getfilehistory',null,null,null,null,$filename,$startLine,$endLine);
 				}
 			} else {
 				$result = execute('getfilehistory',null,null,null,null,$filename,'','');
 			}
-			$lines = file($filename, FILE_IGNORE_NEW_LINES);
-			
+			//$lines = file($filename, FILE_IGNORE_NEW_LINES);
+			$graphData = getNameTotal($result);
 			$result = json_encode($result);
 		}
    	}
+	
+	function getNameTotal($result){
+		$previousName = null;
+		$currentName = null;
+		$totalIns = null;
+		$totalDel = null;
+		$result = json_encode($result);
+        $jsondata = json_decode($result, true);
+		usort($jsondata,function($a,$b) {return strnatcasecmp($a['author'],$b['author']);});
+		$out = array();
+        $list = array();
+		foreach ($jsondata as $re){
+			if(empty($previousName)){
+				$previousName = $re["author"];
+				$totalIns = $re["totalIns"];
+				$totalDel = $re["totalDel"];
+			} else {
+				$currentName = $re["author"];
+				if(strcmp($previousName, $currentName)){
+					$out['author'] = $previousName;
+					$out['addition'] = $totalIns;
+					$out['deletion'] = $totalDel;
+					array_push($list, $out);
+					
+					$previousName = $re["author"];
+					$totalIns = $re["totalIns"];
+					$totalDel = $re["totalDel"];
+					
+				} else {
+					$totalIns += $re["totalIns"];
+					$totalDel += $re["totalDel"];
+				}
+			}
+		}
+		$out['author'] = $previousName;
+		$out['addition'] = $totalIns;
+		$out['deletion'] = $totalDel;
+		array_push($list, $out);
+		
+		return json_encode($list);
+	}
 	
     ?>
 
@@ -67,15 +122,35 @@
 		   -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 				box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 	}
+	
 	.ui-autocomplete > li {
 	  padding: 3px 20px;
 	}
+	
 	.ui-autocomplete > li.ui-state-focus {
 	  background-color: #DDD;
 	}
+	
 	.ui-helper-hidden-accessible {
 	  display: none;
 	}
+	
+	.toolTip {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        position: absolute;
+        display: none;
+        width: auto;
+        height: auto;
+        background: none repeat scroll 0 0 white;
+        border: 0 none;
+        border-radius: 8px 8px 8px 8px;
+        box-shadow: -3px 3px 15px #888888;
+        color: black;
+        font: 12px sans-serif;
+        padding: 5px;
+        text-align: center;
+    }
+	
 </style>
 
 <div class="container">
@@ -115,10 +190,11 @@
             <table id="sortable" class="table table-striped">
                 <thead>
                     <tr>
-                        <th class="col-md-1">Hash</th>
-                        <th class="col-md-2">Author</th>
-                        <th class="col-md-3">Date</th>
-                        <th class="col-md-3">Lines</th>
+                        <th class="col-md-1">Date</th>
+                        <th class="col-md-2">Hash</th>
+                        <th class="col-md-3">Author</th>
+                        <th class="col-md-3">Total Insertions</th>
+						<th class="col-md-3">Total Deletions</th>
                     </tr>
                 </thead>
                 <tbody id="tablebody01"></tbody>
@@ -140,13 +216,24 @@
 	});
 	
 	var jsonData = '<?php echo $result ?>';
-	if (jsonData != ''){
-		document.getElementById("basic-filename").value = '<?php echo $filename ?>';
+	if (jsonData){
+		document.getElementById("basic-filename").value = '<?php echo $_SESSION['git_filename'] ?>';
+		document.getElementById("basic-start-line").value = '<?php echo $_SESSION['git_startLine'] ?>';
+		document.getElementById("basic-end-line").value = '<?php echo $_SESSION['git_endLine'] ?>';
 		var data = JSON.parse(jsonData);
 		drawTable(data);
 		$(document).ready(function() {
-			$('#sortable').DataTable();
+			$('#sortable').DataTable({
+				"order": [[ 0, "desc" ]]
+			});
 		});
+		
+		var obj2 = '<?php echo $graphData?>';
+		if(obj2){
+			var barData = JSON.parse(obj2);
+			drawBarGraph(barData);
+		}
+		
 	}
 
     </script>

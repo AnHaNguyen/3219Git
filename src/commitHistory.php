@@ -27,6 +27,7 @@
 		if(empty($startDate)){
 			$result = execute('getcommithistory',null,null,$_SESSION['git_username'],null,null,'','');
 			$_SESSION['git_start_date'] = null;
+			$title = $_SESSION['git_username'];
 		} else {
 			$result = execute('getcommithistory',null,null,$_SESSION['git_username'],$startDate,null,'','');
 			$_SESSION['git_start_date'] = $startDate;
@@ -143,6 +144,7 @@
 
 <div class="row">
     <h3><?php echo $title ?></h3>
+	
     <div class="col-sm-12">
         <div id="chart"></div>
     </div>

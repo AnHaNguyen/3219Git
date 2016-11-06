@@ -24,8 +24,8 @@ function drawLineGraph(data){
     var y = d3.scaleLinear().range([height, 0]);
     
     // Define the axes
-    var xAxis = d3.axisBottom().scale(x).ticks(5).tickFormat(multiFormat);
-    var yAxis = d3.axisLeft().scale(y).ticks(5);
+    var xAxis = d3.axisBottom().scale(x).tickFormat(multiFormat);
+    var yAxis = d3.axisLeft().scale(y);
     
     // Define the line
     var valueline = d3.line()
