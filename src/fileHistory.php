@@ -95,7 +95,6 @@
 <link href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet" />
 
 <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.js"></script>
-<script src="https://d3js.org/d3.v4.min.js"></script></script>
 <script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
 
@@ -131,6 +130,19 @@
 	.ui-helper-hidden-accessible {
 	  display: none;
 	}
+	
+	
+	.axis {
+	  font: 10px sans-serif;
+	}
+	
+	.axis path,
+	.axis line {
+	  fill: none;
+	  stroke: #000;
+	  shape-rendering: crispEdges;
+	}
+
 	
 	.toolTip {
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;

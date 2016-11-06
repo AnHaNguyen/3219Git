@@ -48,7 +48,7 @@
         foreach ($jsondata as $res){
             if($previousDate == null){
                 $previousDate = $res["date"];
-                $totalNum += 1;
+                $totalNum = 1;
             } else {
                 $currentDate = $res["date"];
                 if($previousDate != $currentDate){
@@ -57,9 +57,9 @@
                     array_push($list, $out);
                     $totalNum = 0;
                 }
+            	$totalNum += 1;
+            	$previousDate = $res["date"];
             }
-            $totalNum += 1;
-            $previousDate = $res["date"];
         }
         if($previousDate != null){
             $out["date"] = $previousDate;
@@ -75,8 +75,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.9.3/css/bootstrap-select.min.css">
 <link href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet" />
 <link href="./assets/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
-	
-<script src="https://d3js.org/d3.v4.min.js"></script></script>
+
 <script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.9.3/js/bootstrap-select.min.js"></script>
@@ -85,10 +84,6 @@
 
 
 <style>
-	/*body {
-  		font: 10px sans-serif;
-	}*/
-
 	.axis path,
 	.axis line {
 	  fill: none;

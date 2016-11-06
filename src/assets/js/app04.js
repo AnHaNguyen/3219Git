@@ -4,15 +4,15 @@ function drawBarGraph(data){
 		width = 960 - margin.left - margin.right,
 		height = 500 - margin.top - margin.bottom;
 		
-		var x = d3.scaleBand().rangeRound([0, width]).padding(0.23)
+		var x = d3.scale.ordinal().rangeRoundBands([0, width], .23);
 		
-		var y = d3.scaleLinear().rangeRound([height, 0]);
+		var y = d3.scale.linear().rangeRound([height, 0]);
 		
-		var color = d3.scaleOrdinal(d3.schemeCategory10);
+		var color = d3.scale.category10();
 		
-		var xAxis = d3.axisBottom().scale(x);
+		var xAxis = d3.svg.axis().scale(x).orient("bottom");
 		
-		var yAxis = d3.axisLeft().scale(y).tickFormat(d3.format(".2s"));
+		var yAxis = d3.svg.axis().scale(y).orient("left").tickFormat(d3.format(".2s"));
 		
 		var svg = d3.select("div#chart").append("svg")
 			.attr("width", width + margin.left + margin.right)
@@ -40,24 +40,24 @@ function drawBarGraph(data){
 			  .attr("transform", "translate(0," + height + ")")
 			  .call(xAxis)
 			  .selectAll(".tick text")
-			  .call(wrap, x.bandwidth());
+			  .call(wrap, x.rangeBand());
 		
 		  svg.append("g")
 			  .attr("class", "y axis")
 			  .call(yAxis);
 			   
-	  var bar = svg.selectAll(".label")
-			.data(data)
-			.enter().append("g")
-			.attr("class", "g")
-			.attr("transform", function(d) { return "translate(" + x(d.author) + ",0)"; });
-			
-	 var bar_enter = bar.selectAll("rect")
-    	.data(function(d) { return d.ages; })
-    	.enter();
+		  var bar = svg.selectAll(".label")
+				.data(data)
+				.enter().append("g")
+				.attr("class", "g")
+				.attr("transform", function(d) { return "translate(" + x(d.author) + ",0)"; });
+				
+		 var bar_enter = bar.selectAll("rect")
+			.data(function(d) { return d.ages; })
+			.enter();
 
 		bar_enter.append("rect")
-			.attr("width", x.bandwidth())
+			.attr("width", x.rangeBand())
 			.attr("y", function(d) { return y(d.y1); })
 			.attr("height", function(d) { return y(d.y0) - y(d.y1); })
 			.style("fill", function(d) { return color(d.name); });
