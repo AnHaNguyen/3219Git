@@ -152,7 +152,6 @@ function buildTable(timedate,user1,user2,user3,minDate, maxDate){
 	var temp2 = [];
 	var temp3 = [];
 	for (var i = 0; i<= diffdate; i++){
-		console.log(mindate, i);
 		temp1 = getCommit(timedate[user1],user1,index1,mindate);
 		temp2 = getCommit(timedate[user2],user2,index2,mindate);
 			
@@ -200,8 +199,6 @@ function buildTable(timedate,user1,user2,user3,minDate, maxDate){
 
 function getCommit(data,user,index,date){
 	var temp = [];
-	console.log(data);
-	console.log(data.length, index);
 	//if data size is 0
 	if(data.length == 0){
 		temp.push(0);
