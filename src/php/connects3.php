@@ -4,6 +4,7 @@
 	}
 	require_once("credential.php");
 	require_once("email.php");
+	require_once("util.php");
 	use Aws\S3\S3Client;
 	use Aws\Credentials\Credentials;
 	
@@ -11,6 +12,7 @@
 	 // sendToCloud("a0113038@u.nus.edu", "emails");
 	
 	function sendToCloud($string, $type) {
+		redirect();
 		$bucket = '3219';
 		
 		if (!is_dir('../../data/')) {
