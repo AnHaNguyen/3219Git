@@ -22,6 +22,7 @@
 			$date = $tokens[1];
 			array_push($list, new Commit($hash, $name, $date));	
 		}
+		usort($list, "sortCommitByDate");
 		return $list;
 	}
 
@@ -113,6 +114,7 @@
 					$hash = '';
 				}
 			}
+			usort($list, "sortCommitByDate");
 			return $list;
 		}
 		else {
@@ -163,6 +165,7 @@
 				$commit->setTotal($a,$d);
 				array_push($list, $commit);
 			}
+			usort($list, "sortCommitByDate");
 			return $list;
 		}
 	}
