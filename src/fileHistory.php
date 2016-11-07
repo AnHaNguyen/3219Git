@@ -31,18 +31,23 @@
 			$startLine = $_POST['basic-start-line'];
 			$endLine = $_POST['basic-end-line'];
 			
-			if(!empty($startLine) && !empty($endLine)){
-				if($startLine > $endLine){
+			if($startLine == '0' && $endLine == '0'){
+				$_SESSION['git_startLine'] = '';
+				$_SESSION['git_endLine'] = '';
+			} else if ($startLine == '0'){
+				$message = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Start line cannot be 0.</div>';
+			} else if($endLine == '0'){
+				$message = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>End line cannot be 0.</div>';
+			} else if(!empty($startLine) && !empty($endLine)){
+				if(($startLine > $endLine)){
 					$message = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Start line must smaller than end line.</div>';
-					$result = execute('getfilehistory',null,null,null,null,$filename,'','');
 				} else {
 					$_SESSION['git_startLine'] = $startLine;
 					$_SESSION['git_endLine'] = $endLine;
-					$result = execute('getfilehistory',null,null,null,null,$filename,$startLine,$endLine);
 				}
-			} else {
-				$result = execute('getfilehistory',null,null,null,null,$filename,'','');
 			}
+			
+			$result = execute('getfilehistory',null,null,null,null,$filename,$_SESSION['git_startLine'],$_SESSION['git_endLine']);
 			//$lines = file($filename, FILE_IGNORE_NEW_LINES);
 			$graphData = getNameTotal($result);
 			$result = json_encode($result);
