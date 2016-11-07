@@ -8,6 +8,7 @@
 	
 	$_SESSION['git_start_date_diff'] = $_SESSION['git_start_date'];
 	$listContributors = $_SESSION['git_contributors'];
+	$templateList = json_decode($listContributors, true);
 	
     if(isset($_SESSION['git_url']) && !empty($_SESSION['git_url']) && isset($_SESSION['git_username']) && !empty($_SESSION['git_username'])) {
 		
@@ -16,7 +17,6 @@
 			$timedata = isNewList($_SESSION['user01'], $_SESSION['user02'], $_SESSION['user03'], $_SESSION['git_start_date_diff']);
 		} else {
 			$_SESSION['user01'] = $_SESSION['git_username'];
-			$templateList = json_decode($listContributors, true);
 			$_SESSION['user02'] = $templateList[1]['Name'];
 			if(($_SESSION['git_total_contributors']) > 2 ){
 				$_SESSION['user03'] = $templateList[2]['Name'];
@@ -41,6 +41,9 @@
 			} else {
 				$timedata = array($user01 => $finalResult, $user02=> $finalResult2);
 			}
+			$_SESSION['finalResult'] = $finalResult;
+			$_SESSION['finalResult2'] = $finalResult2;
+			$_SESSION['finalResult3'] = $finalResult3;
 		} 
 		
 		return json_encode($timedata);
@@ -162,12 +165,16 @@
     
     ?>
 
+<link href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet" />
 <link rel="stylesheet" type="text/css" media="screen" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.9.3/css/bootstrap-select.min.css">
 <link href="./assets/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 	
 <script src="https://d3js.org/d3.v4.min.js"></script></script>
+<script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.9.3/js/bootstrap-select.min.js"></script>
 <script type="text/javascript" src="./assets/js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+<script src="http://www.datejs.com/build/date.js" type="text/javascript"></script>
 <script src="assets/js/app03.js" type="text/javascript"></script>
 
 <style>
@@ -233,6 +240,25 @@
 		<div class="col-xs-12">
 			<div id="graph"></div>
 		</div>
+		
+		<div class="col-xs-12">
+				<table id="sortable" class="table table-striped">
+					<thead>
+						<tr>
+							<th class="col-md-3">Date</th>
+							<th class="col-md-3"><?php echo $_SESSION['user01']?></th>
+							<th class="col-md-3"><?php echo $_SESSION['user02']?></th>
+							
+							<?php if(($_SESSION['git_total_contributors']) > 2 ){ ?>
+								<th class="col-md-3"><?php echo $_SESSION['user03']?></th>
+							<?php }?>
+							</tr>
+						</tr>
+					</thead>
+					<tbody id="tablebody"></tbody>
+				</table>
+		</div>
+		
 	</div>
 
 <script type="text/javascript">
@@ -290,6 +316,14 @@
 		drawCompareGraph(contributors, timedate, minDate, maxDate, maxYValue, user01, user02, user03);
 		
 	}
+	
+	buildTable(timedate, '<?php echo $_SESSION['user01']?>', '<?php echo $_SESSION['user02']?>', '<?php echo $_SESSION['user03']?>', minDate, maxDate);
+	
+	$(document).ready(function() {
+		$('#sortable').DataTable({
+			"order": [[ 0, "desc" ]]
+		});
+	});
 
 	
 </script>

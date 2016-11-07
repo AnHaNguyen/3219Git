@@ -22,7 +22,7 @@
 
 <style>
 svg{
-    width: 600px;
+    width: 960px;
     position: relative;
     left: 50%;
     -webkit-transform: translateX(-50%);
