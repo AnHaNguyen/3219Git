@@ -140,3 +140,84 @@ function randomNumberFromRange(valueLength)
 {
     return  Math.floor(Math.random()*(valueLength)+1);
 }
+
+function buildTable(timedate,user1,user2,user3,minDate, maxDate){
+    
+	var oneDay = 24*60*60*1000;
+	var mindate = new Date(minDate);
+	var maxdate = new Date(maxDate);
+	var diffdate = Math.round((maxdate - mindate)/oneDay);
+	var index1 = 0,index2 = 0,index3 = 0;
+	var temp1 = [];
+	var temp2 = [];
+	var temp3 = [];
+	for (var i = 0; i<= diffdate; i++){
+		temp1 = getCommit(timedate[user1],user1,index1,mindate);
+		temp2 = getCommit(timedate[user2],user2,index2,mindate);
+			
+		var row = document.createElement("tr");
+        var col1 = document.createElement("td"); //date
+        var col2 = document.createElement("td"); 
+		var col3 = document.createElement("td");
+		
+		var tempDate = mindate;
+		var day = tempDate.getDay();
+		var month = tempDate.getMonth();
+		var year = tempDate.getFullYear();
+		
+  		var str = tempDate.toString("yyyy-MM-dd");
+		
+		var date = document.createTextNode(str);
+		var commit1 = document.createTextNode(temp1[0]);
+		var commit2 = document.createTextNode(temp2[0]);
+		
+		col1.appendChild(date);
+		col2.appendChild(commit1);
+		col3.appendChild(commit2);
+		
+		row.appendChild(col1);
+		row.appendChild(col2);
+		row.appendChild(col3);
+		
+		if(user3){
+			temp3 = getCommit(timedate[user3],user3,index3,mindate);
+			var col4 = document.createElement("td");
+			var commit3 = document.createTextNode(temp3[0]);
+			col4.appendChild(commit3);
+			row.appendChild(col4);
+			index3 = temp3[1];
+		}
+		
+		index1 = temp1[1];
+		index2 = temp2[1];
+		
+		mindate.setDate(mindate.getDate() + 1);
+		
+		document.getElementById("tablebody").appendChild(row);
+	}
+}
+
+function getCommit(data,user,index,date){
+	var temp = [];
+	//if data size is 0
+	if(data.length == 0){
+		temp.push(0);
+		temp.push(index);
+	}
+	else if(data.length <= index){
+		temp.push(0);
+		temp.push(index);
+	}
+	
+	//if data[index] is not equal to the date
+	else if(new Date(data[index].date).getTime() == date.getTime()){
+		temp.push(data[index].totalNum);
+		temp.push(index+1);
+	}
+	//equal to date get totalnum of commit of the day and incremement index by 1
+	else{
+		temp.push(0);
+		temp.push(index);
+	}
+	return temp;	
+}

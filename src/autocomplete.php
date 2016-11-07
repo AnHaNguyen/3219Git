@@ -12,7 +12,10 @@
 	foreach ($it as $fileinfo) {
 		if ($fileinfo->isFile()) {
 			//printf("%s\n", $fileinfo->getFilename());
-			$data[] = urlencode($fileinfo->getFilename());
+			$ext = pathinfo($fileinfo->getFilename(), PATHINFO_EXTENSION);
+			if($ext){
+				$data[] = urlencode($fileinfo->getFilename());
+			}
 		}
 	}
 	echo json_encode($data);
