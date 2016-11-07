@@ -103,9 +103,9 @@ def sendEmail(sender, password, updatedData, subList, lastSentList, threshold):
 
 def lambda_handler(event, context):
     #Set default values for sender:
-    sender = "besttemvn" #Email address of the sender
-    threshold = 0 #Send emails to subscribers who have not logged in for at least this many days
+    sender = event['email'] #Email address of the sender
     password = event['password']  #The password should be input as a field of event or set as below
+    threshold = event['threshold'] #Send emails to subscribers who have not logged in for at least this many days
     
     #Setup the bucket
     s3 = setupBucket()
