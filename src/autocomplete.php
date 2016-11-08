@@ -1,22 +1,18 @@
 <?php 
-	// Create recursive dir iterator which skips dot folders
-	$dir = new RecursiveDirectoryIterator('/Users/jiamin/Desktop/3219Git/repos/'.$_SESSION['repo_name'], FilesystemIterator::SKIP_DOTS);
+	$root = dirname(__DIR__).'/repos/'.$_SESSION['repo_name'].'/';
 	
-	// Flatten the recursive iterator, folders come before their files
-	$it  = new RecursiveIteratorIterator($dir, RecursiveIteratorIterator::SELF_FIRST);
+	$rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS));
 	
-	// Maximum depth is 1 level deeper than the base folder
-	$it->setMaxDepth(1);
+	$files = array(); 
 	
-	// Basic loop displaying different messages based on file or folder
-	foreach ($it as $fileinfo) {
-		if ($fileinfo->isFile()) {
-			//printf("%s\n", $fileinfo->getFilename());
-			$ext = pathinfo($fileinfo->getFilename(), PATHINFO_EXTENSION);
-			if($ext){
-				$data[] = urlencode($fileinfo->getFilename());
-			}
+	foreach ($rii as $file) {
+	
+		if ($file->isDir()){ 
+			continue;
 		}
+	
+		$files[] = $file->getPathname(); 
 	}
-	echo json_encode($data);
+	
+	echo json_encode($files);
 ?>
